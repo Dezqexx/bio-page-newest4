@@ -99,3 +99,36 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .glow {
+    filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.3));
+  }
+}
+
+body {
+  @apply bg-black;
+}
+
+/* Add stars animation */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+.star {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background: #00ff00;
+  animation: twinkle 3s infinite;
+}
+
+/* Create 50 stars with random positions */
+@for i from 1 through 50 {
+  .star:nth-child($(i)) {
+    left: $(random(100))%;
+    top: $(random(100))%;
+    animation-delay: $(random(3))s;
+  }
+}
