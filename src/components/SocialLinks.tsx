@@ -1,13 +1,13 @@
 
-import { GamepadIcon, MessageCircle, Music, Activity, FileText } from 'lucide-react';
+import { Steam, MessageSquare, Music2, Activity, FileText } from 'lucide-react';
 
 const SocialLinks = () => {
   return (
     <div className="flex gap-4 mt-6">
       {[
-        { Icon: GamepadIcon, href: "#", label: "Steam" },
-        { Icon: MessageCircle, href: "#", label: "Discord" },
-        { Icon: Music, href: "#", label: "Spotify" },
+        { Icon: Steam, href: "#", label: "Steam" },
+        { Icon: MessageSquare, href: "#", label: "Discord" },
+        { Icon: Music2, href: "#", label: "Spotify" },
         { Icon: Activity, href: "#", label: "stats.fm" },
         { Icon: FileText, href: "#", label: "AniList" },
       ].map(({ Icon, href, label }, index) => (

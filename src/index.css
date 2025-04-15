@@ -133,6 +133,25 @@
     opacity: 0.5;
   }
 
+  .lightning {
+    position: fixed;
+    width: 4px;
+    height: 100px;
+    background: #00ff00;
+    filter: blur(4px);
+    z-index: 2;
+    animation: lightning 0.2s linear;
+    box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+  }
+
+  @keyframes lightning {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    20% { opacity: 0; }
+    30% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
   @keyframes rain {
     0% {
       transform: translateY(-100vh);
