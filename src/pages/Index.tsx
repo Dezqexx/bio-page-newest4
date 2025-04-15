@@ -1,12 +1,16 @@
-
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
 import SocialLinks from "@/components/SocialLinks";
+import RainEffect from "@/components/RainEffect";
+import useSparkleEffect from "@/hooks/useSparkleEffect";
 import { MapPin } from "lucide-react";
 
 const Index = () => {
+  useSparkleEffect();
+  
   return (
-    <div className="min-h-screen flex items-center justify-center text-white relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center text-white relative overflow-hidden cursor-custom">
+      <RainEffect />
       <BackgroundVideo videoUrl="/your-video.mp4" />
       <AudioPlayer audioUrl="/your-audio.mp3" />
       

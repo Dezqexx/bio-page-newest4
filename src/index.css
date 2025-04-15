@@ -104,6 +104,65 @@
   .glow {
     filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.3));
   }
+
+  .cursor-custom {
+    cursor: none;
+  }
+  
+  .cursor-custom::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid #00ff00;
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    background: black;
+    box-shadow: 0 0 10px #00ff00;
+  }
+
+  .rain-drop {
+    position: fixed;
+    width: 2px;
+    height: 20px;
+    background: linear-gradient(transparent, #00ff00);
+    z-index: 1;
+    animation: rain linear forwards;
+    opacity: 0.5;
+  }
+
+  @keyframes rain {
+    0% {
+      transform: translateY(-100vh);
+    }
+    100% {
+      transform: translateY(100vh);
+    }
+  }
+
+  .sparkle {
+    position: fixed;
+    pointer-events: none;
+    width: 4px;
+    height: 4px;
+    background: #00ff00;
+    border-radius: 50%;
+    z-index: 9999;
+    animation: sparkle 0.8s linear forwards;
+  }
+
+  @keyframes sparkle {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0);
+      opacity: 0;
+    }
+  }
 }
 
 body {
