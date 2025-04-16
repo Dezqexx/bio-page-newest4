@@ -106,21 +106,7 @@
   }
 
   .cursor-custom {
-    cursor: none;
-  }
-  
-  .cursor-custom::after {
-    content: '';
-    width: 20px;
-    height: 20px;
-    border: 2px solid #00ff00;
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    background: black;
-    box-shadow: 0 0 10px #00ff00;
+    cursor: default; /* Optional: reset cursor to default */
   }
 
   .rain-drop {

@@ -13,7 +13,7 @@ const Index = () => {
   const [entered, setEntered] = useState(false);
   
   return (
-    <div className="min-h-screen flex items-center justify-center text-white relative overflow-hidden cursor-custom">
+    <div className="min-h-screen flex items-center justify-center text-white relative overflow-hidden">
       <RainEffect />
       <BackgroundVideo videoUrl="/your-video.mp4" />
       <AudioPlayer audioUrl="/your-audio.mp3" />
