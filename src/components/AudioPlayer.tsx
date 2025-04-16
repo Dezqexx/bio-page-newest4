@@ -1,14 +1,27 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 
 interface AudioPlayerProps {
   audioUrl: string;
+  autoplay?: boolean;
 }
 
-const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
+const AudioPlayer = ({ audioUrl, autoplay = false }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (autoplay && audioRef.current) {
+      audioRef.current.play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(err => {
+          console.error("Failed to autoplay audio:", err);
+        });
+    }
+  }, [autoplay]);
 
   const togglePlay = () => {
     if (audioRef.current) {
