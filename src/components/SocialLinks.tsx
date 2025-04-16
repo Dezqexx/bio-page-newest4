@@ -8,7 +8,7 @@ const SocialLinks = () => {
         { icon: "mdi:steam", href: "#", label: "Steam" },
         { icon: "ic:baseline-discord", href: "#", label: "Discord" },
         { icon: "mdi:spotify", href: "#", label: "Spotify" },
-        { icon: "simple-icons:statsfm", href: "#", label: "stats.fm" },
+        { icon: "simple-icons:statsfm", href: "https://stats.fm/", label: "stats.fm" },
         { icon: "simple-icons:anilist", href: "#", label: "AniList" },
       ].map(({ icon, href, label }, index) => (
         <a
