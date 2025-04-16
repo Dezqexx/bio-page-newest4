@@ -1,12 +1,16 @@
+
+import { useState } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
-import SocialLinks from "@/components/SocialLinks";
 import RainEffect from "@/components/RainEffect";
 import useSparkleEffect from "@/hooks/useSparkleEffect";
-import { MapPin } from "lucide-react";
+import ProfileCard from "@/components/ProfileCard";
+import BioPage from "@/components/BioPage";
+import DiscordPresence from "@/components/DiscordPresence";
 
 const Index = () => {
   useSparkleEffect();
+  const [showBio, setShowBio] = useState(false);
   
   return (
     <div className="min-h-screen flex items-center justify-center text-white relative overflow-hidden cursor-custom">
@@ -14,26 +18,28 @@ const Index = () => {
       <BackgroundVideo videoUrl="/your-video.mp4" />
       <AudioPlayer audioUrl="/your-audio.mp3" />
       
-      <div className="relative z-10 text-center">
-        <div className="w-32 h-32 mx-auto mb-6 rounded-full border-2 border-[#00ff00] overflow-hidden glow">
-          <img
-            src="/your-avatar.jpg"
-            alt="Profile"
-            className="w-full h-full object-cover"
+      <div className="relative z-10 text-center w-full max-w-3xl px-4">
+        {/* Main profile card */}
+        <ProfileCard 
+          username="Dez"
+          location="Germany"
+          quote="\"Without music, life would be a mistake\" — Friedrich Nietzsche"
+          onBioClick={() => setShowBio(true)}
+        />
+        
+        {/* Discord presence card - shown below main card */}
+        <div className="mt-4 max-w-sm mx-auto">
+          <DiscordPresence 
+            username="dezqex"
+            status="online"
+            customStatus="Playing CS2"
+            onClick={() => setShowBio(true)}
           />
         </div>
-        
-        <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow">
-          Username
-        </h1>
-        
-        <div className="flex items-center justify-center gap-2 text-[#00ff00]/80 mb-6">
-          <MapPin className="w-4 h-4" />
-          <span>Location</span>
-        </div>
-
-        <SocialLinks />
       </div>
+      
+      {/* Bio page - shown when clicked */}
+      {showBio && <BioPage onClose={() => setShowBio(false)} username="Dez" />}
     </div>
   );
 };

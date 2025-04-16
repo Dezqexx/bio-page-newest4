@@ -4,13 +4,13 @@ import { Music } from 'lucide-react';
 
 const SocialLinks = () => {
   return (
-    <div className="flex gap-4 mt-6">
+    <div className="flex gap-4 mt-2 justify-center">
       {[
-        { icon: "mdi:steam", href: "#", label: "Steam", type: "iconify" },
-        { icon: "ic:baseline-discord", href: "#", label: "Discord", type: "iconify" },
+        { icon: "mdi:discord", href: "#", label: "Discord", type: "iconify" },
+        { icon: "simple-icons:lastdotfm", href: "#", label: "Last.fm", type: "iconify" },
         { icon: "mdi:spotify", href: "#", label: "Spotify", type: "iconify" },
         { icon: null, href: "https://stats.fm/", label: "stats.fm", type: "lucide" },
-        { icon: "simple-icons:anilist", href: "#", label: "AniList", type: "iconify" },
+        { icon: "simple-icons:steam", href: "#", label: "Steam", type: "iconify" },
       ].map(({ icon, href, label, type }, index) => (
         <a
           key={index}
