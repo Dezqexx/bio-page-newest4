@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import TiltCard from '@/components/TiltCard';
 import { Activity, MessageCircle, Gamepad, Music, Sparkles } from 'lucide-react';
@@ -53,8 +52,6 @@ interface LanyardData {
   };
 }
 
-// Activity types from Discord API
-// 0 = Playing, 1 = Streaming, 2 = Listening, 3 = Watching, 4 = Custom, 5 = Competing
 const activityTypes = ["Playing", "Streaming", "Listening to", "Watching", "Custom", "Competing in"];
 
 const DiscordPresence = () => {
@@ -81,8 +78,6 @@ const DiscordPresence = () => {
 
     fetchDiscordPresence();
 
-    // Optionally setup websocket for real-time updates
-    // For now we'll just use polling every 30 seconds
     const intervalId = setInterval(fetchDiscordPresence, 30000);
     
     return () => clearInterval(intervalId);
@@ -124,20 +119,17 @@ const DiscordPresence = () => {
 
   const { discord_user, discord_status, activities, spotify, listening_to_spotify } = lanyardData.data;
   
-  // Use the provided avatar URL directly
   const avatarUrl = "https://cdn.discordapp.com/avatars/790718755931815947/a_86e001b599ecf28ab775d89b9a3e1dce.gif?size=4096";
   
   const displayName = discord_user.global_name || discord_user.username;
 
-  // Filter activities to identify custom status and other activities
   const customStatusActivity = activities.find(act => act.type === 4);
   const otherActivities = activities.filter(act => act.type !== 4);
   
-  // Get the current activity - prioritize non-custom activities or Spotify
   let currentActivity = null;
   if (listening_to_spotify && spotify) {
     currentActivity = {
-      type: 2, // Spotify is type 2 (Listening)
+      type: 2,
       name: spotify.song,
       details: `by ${spotify.artist}`,
       assets: { large_image: spotify.album_art_url }
@@ -160,17 +152,14 @@ const DiscordPresence = () => {
         <div className="text-left flex flex-col">
           <div className="flex items-center">
             <div className="text-[#00ff00] font-medium">{displayName}</div>
-            {/* Discord Nitro badge */}
             <div className="ml-1">
-              <img src="https://I-love.goth-girls.online/m2zi1t30.svg" alt="Discord Nitro" className="w-5 h-5" />
+              <img src="https://I-love.thicc-thighs.com/aj2vumbr.svg" alt="Discord Nitro" className="w-5 h-5" />
             </div>
-            {/* Server Boosting badge */}
             <div className="ml-1">
               <img src="https://your-mom-is-so-fat-we-couldnt-fit-her-in-this-doma.in/p8l5ur18.svg" alt="Server Boosting" className="w-5 h-5" />
             </div>
           </div>
           
-          {/* Custom Status with Emoji below username */}
           {customStatusActivity?.emoji && (
             <div className="text-[#00ff00]/70 text-xs flex items-center mt-1">
               <img 
@@ -184,7 +173,6 @@ const DiscordPresence = () => {
         </div>
       </div>
       
-      {/* Only show activity section if there's a current activity (not custom status) */}
       {currentActivity && currentActivity.type !== 4 && (
         <div className="mt-2 border-t border-[#00ff00]/20 pt-2">
           <div className="flex items-center justify-center">
@@ -226,7 +214,6 @@ const DiscordPresence = () => {
                 alt={currentActivity.assets.large_text || currentActivity.name}
                 className="h-16 rounded-md border border-[#00ff00]/30"
                 onError={(e) => {
-                  // Hide the image if it fails to load
                   (e.target as HTMLImageElement).style.display = 'none';
                 }}
               />

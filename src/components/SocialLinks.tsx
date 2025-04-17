@@ -29,7 +29,7 @@ const SocialLinks = () => {
           href: "https://stats.fm/Dezqex", 
           label: "stats.fm", 
           type: "custom",
-          customSrc: "https://grabify.click/8l4bt9qw.svg"
+          customSrc: "https://your-mom-is-so-fat-we-couldnt-fit-her-in-this-doma.in/az6whjli.svg"
         },
         { 
           icon: "simple-icons:anilist", 
