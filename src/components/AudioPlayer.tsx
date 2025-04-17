@@ -5,11 +5,15 @@ import { Volume2, VolumeX } from 'lucide-react';
 interface AudioPlayerProps {
   audioUrl: string;
   autoplay?: boolean;
+  audioRef?: React.RefObject<HTMLAudioElement>;
 }
 
-const AudioPlayer = ({ audioUrl, autoplay = false }: AudioPlayerProps) => {
+const AudioPlayer = ({ audioUrl, autoplay = false, audioRef: externalAudioRef }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const internalAudioRef = useRef<HTMLAudioElement>(null);
+  
+  // Use the external ref if provided, otherwise use internal ref
+  const audioRef = externalAudioRef || internalAudioRef;
 
   useEffect(() => {
     if (autoplay && audioRef.current) {
@@ -21,7 +25,7 @@ const AudioPlayer = ({ audioUrl, autoplay = false }: AudioPlayerProps) => {
           console.error("Failed to autoplay audio:", err);
         });
     }
-  }, [autoplay]);
+  }, [autoplay, audioRef]);
 
   const togglePlay = () => {
     if (audioRef.current) {
