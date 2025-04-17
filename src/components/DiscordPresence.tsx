@@ -2,6 +2,9 @@
 import { useEffect, useState } from 'react';
 import TiltCard from '@/components/TiltCard';
 import { Activity, MessageCircle, Gamepad, Music } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 
 interface LanyardData {
   data: {
@@ -18,6 +21,11 @@ interface LanyardData {
       type: number;
       state?: string;
       details?: string;
+      emoji?: {
+        id: string;
+        name: string;
+        animated: boolean;
+      };
       assets?: {
         large_image?: string;
         large_text?: string;
@@ -93,20 +101,26 @@ const DiscordPresence = () => {
   };
 
   const renderStatusIndicator = (status: string) => {
-    if (status === 'dnd') {
-      // Render custom DND emoji for Do Not Disturb
+    const statusColor = getStatusColor(status);
+    const statusText = status === 'online' ? 'Online' :
+                      status === 'idle' ? 'Idle' : 'Offline';
+    
+    // Check if user has custom status with emoji
+    const customStatusActivity = lanyardData?.data.activities.find(act => act.type === 4 && act.emoji);
+    
+    if (status === 'dnd' && customStatusActivity?.emoji) {
+      // Render custom emoji for DND status
       return (
-        <div className="flex items-center bg-black/70 text-red-500 text-xs rounded px-2 py-0.5">
-          <div className="w-2 h-2 bg-red-500 rounded-full mr-1"></div>
-          Do Not Disturb
+        <div className="flex items-center text-xs text-[#00ff00]/70">
+          <img 
+            src={`https://cdn.discordapp.com/emojis/${customStatusActivity.emoji.id}.${customStatusActivity.emoji.animated ? 'gif' : 'png'}`} 
+            alt={customStatusActivity.emoji.name}
+            className="w-4 h-4 mr-1"
+          />
+          <span>{status === 'dnd' ? 'DND' : statusText}</span>
         </div>
       );
     }
-
-    const statusColor = getStatusColor(status);
-    const statusText = status === 'dnd' ? 'Do Not Disturb' : 
-                      status === 'online' ? 'Online' :
-                      status === 'idle' ? 'Idle' : 'Offline';
     
     return (
       <div className="flex items-center text-xs text-[#00ff00]/70">
@@ -156,7 +170,7 @@ const DiscordPresence = () => {
   
   const displayName = discord_user.global_name || discord_user.username;
 
-  // Filter activities to exclude custom status (type 4) if other activities exist or if custom status is the only activity
+  // Filter activities to exclude custom status (type 4) if other activities exist
   const nonCustomStatusActivities = activities.filter(act => act.type !== 4);
   
   // Get the current activity - prioritize non-custom activities or Spotify
@@ -172,14 +186,16 @@ const DiscordPresence = () => {
     currentActivity = nonCustomStatusActivities[0];
   }
 
-  // Only show custom status if there are no other activities
-  const showCustomStatus = activities.length > 0 && nonCustomStatusActivities.length === 0 && !currentActivity;
-  if (showCustomStatus) {
-    const customStatus = activities.find(act => act.type === 4);
-    if (customStatus) {
-      currentActivity = customStatus;
-    }
+  // Only show custom status if explicitly requested by user and there are no other activities
+  const customStatusWithEmoji = activities.find(act => act.type === 4 && act.emoji);
+  const showCustomStatus = activities.length > 0 && nonCustomStatusActivities.length === 0 && !currentActivity && customStatusWithEmoji;
+  
+  if (showCustomStatus && customStatusWithEmoji) {
+    currentActivity = customStatusWithEmoji;
   }
+
+  // Get custom emoji from the custom status activity
+  const customEmoji = customStatusWithEmoji?.emoji;
 
   return (
     <TiltCard className="mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm">
@@ -190,22 +206,50 @@ const DiscordPresence = () => {
             alt={displayName}
             className="w-10 h-10 rounded-full border border-[#00ff00]/30"
           />
-          <div className={`absolute bottom-0 right-0 w-3 h-3 ${discord_status === 'dnd' ? 'bg-red-500' : getStatusColor(discord_status)} rounded-full border border-black`}></div>
+          <div className={`absolute bottom-0 right-0 w-3 h-3 ${getStatusColor(discord_status)} rounded-full border border-black`}></div>
         </div>
         <div className="text-left">
           <div className="text-[#00ff00] font-medium">{displayName}</div>
           {renderStatusIndicator(discord_status)}
         </div>
       </div>
+      
+      {/* Badges row - from the screenshot */}
+      <div className="flex justify-center gap-2 my-2">
+        <HoverCard>
+          <HoverCardTrigger>
+            <Badge className="bg-gradient-to-r from-purple-600 to-purple-900 border-none">
+              <img src="/lovable-uploads/af39200b-e516-4516-bb11-8b7ef28b92a4.png" alt="Badges" className="h-5" />
+            </Badge>
+          </HoverCardTrigger>
+          <HoverCardContent className="w-48 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00]/80 text-xs">
+            Special Discord Badges
+          </HoverCardContent>
+        </HoverCard>
+      </div>
 
       {currentActivity && (
         <div className="mt-2 border-t border-[#00ff00]/20 pt-2">
           <div className="flex items-center justify-center">
-            {getActivityIcon(currentActivity.type)}
+            {currentActivity.type !== 4 ? (
+              getActivityIcon(currentActivity.type)
+            ) : currentActivity.emoji ? (
+              <img 
+                src={`https://cdn.discordapp.com/emojis/${currentActivity.emoji.id}.${currentActivity.emoji.animated ? 'gif' : 'png'}`} 
+                alt={currentActivity.emoji.name} 
+                className="w-5 h-5 text-[#00ff00]"
+              />
+            ) : (
+              <Activity className="w-5 h-5 text-[#00ff00]" />
+            )}
+            
             <div className="ml-2 text-left">
-              <div className="text-[#00ff00]/90 text-sm">
-                {activityTypes[currentActivity.type]} {currentActivity.name}
-              </div>
+              {currentActivity.type !== 4 && (
+                <div className="text-[#00ff00]/90 text-sm">
+                  {activityTypes[currentActivity.type]} {currentActivity.name}
+                </div>
+              )}
+              
               {currentActivity.details && (
                 <div className="text-[#00ff00]/70 text-xs truncate max-w-[200px]">
                   {currentActivity.details}
@@ -213,6 +257,7 @@ const DiscordPresence = () => {
               )}
             </div>
           </div>
+          
           {currentActivity.assets?.large_image && (
             <div className="mt-2 flex justify-center">
               <img
