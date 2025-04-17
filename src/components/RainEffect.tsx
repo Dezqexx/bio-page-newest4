@@ -7,14 +7,85 @@ const RainEffect = () => {
       const drop = document.createElement('div');
       drop.className = 'rain-drop';
       drop.style.left = `${Math.random() * 100}vw`;
-      drop.style.opacity = `${0.7 + Math.random() * 0.3}`; // Higher opacity for more visibility
-      drop.style.width = `${1 + Math.random() * 2}px`; // Slightly thicker rain drops
       drop.style.animationDuration = `${Math.random() * 1 + 0.5}s`;
       document.body.appendChild(drop);
 
       // Randomly create lightning
       if (Math.random() < 0.02) { // 2% chance for lightning
-        createLightning();
+        // Create lightning group to make it more realistic
+        const lightningGroup = document.createElement('div');
+        lightningGroup.className = 'lightning-group';
+        lightningGroup.style.left = `${Math.random() * 100}vw`;
+        lightningGroup.style.top = `${Math.random() * 30}vh`;
+        document.body.appendChild(lightningGroup);
+        
+        // Create multiple lightning bolts for main strike
+        for (let i = 0; i < 4; i++) {
+          const lightning = document.createElement('div');
+          lightning.className = 'lightning';
+          // Slightly offset each strand for a more natural look
+          lightning.style.left = `${i === 0 ? 0 : (Math.random() * 5) - 2.5}px`;
+          lightning.style.top = `${i === 0 ? 0 : Math.random() * 10}px`;
+          lightning.style.width = `${1 + Math.random() * 4}px`;
+          lightning.style.height = `${70 + Math.random() * 100}px`;
+          lightning.style.opacity = `${0.7 + Math.random() * 0.3}`;
+          lightning.style.filter = `blur(${0.5 + Math.random() * 2}px)`;
+          lightning.style.transform = `rotate(${-5 + Math.random() * 10}deg)`;
+          // Add zigzag using clip-path for more realistic lightning
+          const zigzagAmount = 10;
+          const points = [];
+          const segmentCount = 8;
+          
+          // Generate zigzag points
+          for (let j = 0; j <= segmentCount; j++) {
+            const progress = j / segmentCount;
+            const horizontalOffset = j % 2 === 0 ? 
+              -zigzagAmount + Math.random() * zigzagAmount * 0.5 : 
+              zigzagAmount + Math.random() * zigzagAmount * 0.5;
+            points.push(`${50 + horizontalOffset}% ${progress * 100}%`);
+          }
+          
+          lightning.style.clipPath = `polygon(${points.join(', ')})`;
+          lightningGroup.appendChild(lightning);
+
+          // Create 2-3 branches for main lightning
+          if (i < 2) {
+            const branchCount = 1 + Math.floor(Math.random() * 3);
+            for (let b = 0; b < branchCount; b++) {
+              const branch = document.createElement('div');
+              branch.className = 'lightning-branch';
+              // Branch starts at random position along main bolt
+              const branchStart = 20 + Math.random() * 60;
+              branch.style.top = `${branchStart}%`;
+              branch.style.left = `${lightning.style.left}`;
+              branch.style.width = `${1 + Math.random() * 2}px`;
+              branch.style.height = `${20 + Math.random() * 40}px`;
+              branch.style.opacity = lightning.style.opacity;
+              branch.style.filter = lightning.style.filter;
+              // Branches at various angles
+              branch.style.transform = `rotate(${-70 + Math.random() * 140}deg)`;
+              
+              // Add zigzag to branches too
+              const branchPoints = [];
+              const branchSegments = 4;
+              
+              for (let j = 0; j <= branchSegments; j++) {
+                const progress = j / branchSegments;
+                const horizontalOffset = j % 2 === 0 ? 
+                  -zigzagAmount * 0.7 + Math.random() * zigzagAmount * 0.3 : 
+                  zigzagAmount * 0.7 + Math.random() * zigzagAmount * 0.3;
+                branchPoints.push(`${50 + horizontalOffset}% ${progress * 100}%`);
+              }
+              
+              branch.style.clipPath = `polygon(${branchPoints.join(', ')})`;
+              lightningGroup.appendChild(branch);
+            }
+          }
+        }
+
+        setTimeout(() => {
+          lightningGroup.remove();
+        }, 200 + Math.random() * 100);
       }
 
       setTimeout(() => {
@@ -22,73 +93,8 @@ const RainEffect = () => {
       }, 2000);
     };
 
-    const createLightning = () => {
-      // Main lightning bolt with zigzag pattern
-      const mainBolt = document.createElement('div');
-      mainBolt.className = 'lightning';
-      
-      const startX = Math.random() * 100;
-      let currentX = startX;
-      let currentY = -10; // Start slightly off-screen
-      
-      const bolt = document.createElement('div');
-      bolt.className = 'lightning-path';
-      bolt.style.left = `${currentX}vw`;
-      bolt.style.top = `${currentY}vh`;
-      document.body.appendChild(bolt);
-      
-      // Create zigzag pattern with multiple segments
-      const segments = 5 + Math.floor(Math.random() * 4);
-      const segmentHeight = 100 / segments;
-      
-      for (let i = 0; i < segments; i++) {
-        const zigzag = document.createElement('div');
-        zigzag.className = 'lightning-segment';
-        
-        // Calculate next position with zigzag effect
-        const nextX = currentX + (Math.random() * 10 - 5);
-        currentY += segmentHeight;
-        
-        zigzag.style.left = `${currentX}vw`;
-        zigzag.style.top = `${currentY}vh`;
-        zigzag.style.width = `${2 + Math.random() * 3}px`;
-        zigzag.style.height = `${segmentHeight + Math.random() * 5}vh`;
-        zigzag.style.opacity = `${0.8 + Math.random() * 0.2}`;
-        zigzag.style.filter = `blur(${0.5 + Math.random()}px)`;
-        zigzag.style.transform = `rotate(${-5 + Math.random() * 10}deg)`;
-        document.body.appendChild(zigzag);
-        
-        currentX = nextX;
-        
-        // Add branch with 40% probability except for the first segment
-        if (i > 0 && Math.random() < 0.4) {
-          const branch = document.createElement('div');
-          branch.className = 'lightning-branch';
-          branch.style.left = `${currentX}vw`;
-          branch.style.top = `${currentY}vh`;
-          branch.style.width = `${1 + Math.random() * 1.5}px`;
-          branch.style.height = `${10 + Math.random() * 25}px`;
-          branch.style.opacity = `${0.6 + Math.random() * 0.4}`;
-          branch.style.filter = `blur(${0.5 + Math.random()}px)`;
-          branch.style.transform = `rotate(${-60 + Math.random() * 120}deg)`;
-          document.body.appendChild(branch);
-          
-          setTimeout(() => {
-            branch.remove();
-          }, 150);
-        }
-        
-        setTimeout(() => {
-          zigzag.remove();
-        }, 150);
-      }
-    };
-
     const rainInterval = setInterval(() => {
-      // Create multiple drops at once for more density
-      for (let i = 0; i < 3; i++) {
-        createRainDrop();
-      }
+      createRainDrop();
     }, 50);
 
     return () => clearInterval(rainInterval);
