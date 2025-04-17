@@ -37,8 +37,13 @@ const AudioPlayer = ({ audioUrl, autoplay = false, audioRef: externalAudioRef }:
     };
   }, [audioRef]);
 
+  // Initialize audio playback when component mounts or autoplay changes
   useEffect(() => {
     if (autoplay && audioRef.current) {
+      // Make sure audio is not muted and has appropriate volume
+      audioRef.current.muted = false;
+      audioRef.current.volume = 1;
+      
       const playPromise = audioRef.current.play();
       
       if (playPromise !== undefined) {
@@ -49,6 +54,12 @@ const AudioPlayer = ({ audioUrl, autoplay = false, audioRef: externalAudioRef }:
           })
           .catch(err => {
             console.error("Failed to autoplay audio:", err);
+            // Try once more after a short delay
+            setTimeout(() => {
+              audioRef.current?.play()
+                .then(() => console.log("Second attempt audio playback success"))
+                .catch(e => console.error("Second attempt failed:", e));
+            }, 500);
           });
       }
     }
@@ -59,6 +70,10 @@ const AudioPlayer = ({ audioUrl, autoplay = false, audioRef: externalAudioRef }:
       if (isPlaying) {
         audioRef.current.pause();
       } else {
+        // Ensure audio is not muted
+        audioRef.current.muted = false;
+        audioRef.current.volume = 1;
+        
         audioRef.current.play()
           .catch(err => {
             console.error("Error playing audio:", err);

@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -98,6 +97,7 @@
 
   body {
     @apply bg-background text-foreground;
+    cursor: url('https://your-mom-is-so-fat-we-couldnt-fit-her-in-this-doma.in/p22n3sd4.cur'), auto;
   }
 }
 
