@@ -119,36 +119,41 @@
     animation: rain linear forwards;
     opacity: 0.5;
   }
+  
+  .lightning-group {
+    position: fixed;
+    z-index: 2;
+    pointer-events: none;
+  }
 
   .lightning {
-    position: fixed;
-    width: 4px;
-    height: 100px;
+    position: absolute;
     background: #00ff00;
-    filter: blur(4px);
     z-index: 2;
     animation: lightning 0.2s linear;
-    box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff00;
+    box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px rgba(0, 255, 0, 0.8);
   }
 
   .lightning-branch {
-    position: fixed;
-    width: 3px;
-    height: 50px;
+    position: absolute;
     background: #00ff00;
-    filter: blur(3px);
     z-index: 2;
     animation: lightning 0.2s linear;
-    box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+    box-shadow: 0 0 10px #00ff00, 0 0 20px rgba(0, 255, 0, 0.6);
+    transform-origin: top left;
   }
 
   @keyframes lightning {
     0% { opacity: 0; }
-    10% { opacity: 1; }
-    20% { opacity: 0.5; }
-    30% { opacity: 0.8; }
-    50% { opacity: 0.3; }
+    5% { opacity: 0.1; }
+    10% { opacity: 0.95; }
+    15% { opacity: 0.2; }
+    20% { opacity: 0.9; }
+    30% { opacity: 0.3; }
+    40% { opacity: 0.8; }
+    60% { opacity: 0.2; }
     70% { opacity: 0.7; }
+    80% { opacity: 0.3; }
     100% { opacity: 0; }
   }
 
@@ -180,6 +185,20 @@
     100% {
       transform: scale(0);
       opacity: 0;
+    }
+  }
+  
+  /* Audio reactive pulse animation */
+  .audio-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { 
+      box-shadow: 0 0 5px rgba(0, 255, 0, 0.5); 
+    }
+    50% { 
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.8); 
     }
   }
 }
