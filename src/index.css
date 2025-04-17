@@ -111,13 +111,13 @@
 
   .rain-drop {
     position: fixed;
-    width: 2px;
+    width: 1.5px;
     height: 30px; /* Increased height for more visibility */
-    background: linear-gradient(transparent, #00ff00);
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.8));
     z-index: 1;
     animation: rain linear forwards;
-    opacity: 0.7; /* Increased opacity for more visibility */
-    box-shadow: 0 0 4px #00ff00; /* Added glow effect */
+    opacity: 0.6; /* Adjusted opacity for more realism */
+    box-shadow: 0 0 2px rgba(14, 165, 233, 0.3); /* Subtle blue glow */
   }
 
   /* Lightning main container */
@@ -125,7 +125,7 @@
     position: fixed;
     z-index: 2;
     pointer-events: none;
-    filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.7));
+    filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.8));
     animation: lightning-flicker 0.3s linear;
   }
 
@@ -133,20 +133,28 @@
   .lightning-segment {
     position: absolute;
     width: 3px;
-    background: #00ff00;
+    background: #EFFFFF; /* Default light blue-white */
     border-radius: 1px;
-    box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
-    opacity: 0.9;
+    box-shadow: 
+      0 0 5px #EFFFFF,
+      0 0 10px #0EA5E9, 
+      0 0 20px rgba(14, 165, 233, 0.5);
+    opacity: 0.95;
   }
+
+  /* Lightning segments can have dynamic colors applied via JS */
 
   /* Lightning branches */
   .lightning-branch {
     position: absolute;
     width: 2px;
-    background: #00ff00;
+    background: #F9FEFF; /* Slightly different white */
     border-radius: 1px;
-    box-shadow: 0 0 8px #00ff00, 0 0 16px #00ff00;
-    opacity: 0.7;
+    box-shadow: 
+      0 0 4px #EFFFFF,
+      0 0 8px #0EA5E9, 
+      0 0 12px rgba(14, 165, 233, 0.4);
+    opacity: 0.8;
     pointer-events: none;
   }
 
@@ -157,26 +165,26 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 255, 0, 0.03);
+    background: rgba(255, 255, 255, 0.08);
     z-index: 1;
     pointer-events: none;
-    animation: lightning-flash 0.3s ease-out;
+    transition: opacity 0.05s ease-in-out;
   }
 
   @keyframes lightning-flash {
     0%, 100% { opacity: 0; }
-    10% { opacity: 0.1; }
-    20% { opacity: 0.03; }
-    50% { opacity: 0.05; }
+    10% { opacity: 0.15; }
+    20% { opacity: 0.05; }
+    50% { opacity: 0.1; }
     60% { opacity: 0; }
   }
 
   @keyframes lightning-flicker {
     0% { opacity: 1; }
-    20% { opacity: 0.6; }
-    40% { opacity: 0.8; }
-    60% { opacity: 0.4; }
-    80% { opacity: 0.7; }
+    20% { opacity: 0.8; }
+    40% { opacity: 0.9; }
+    60% { opacity: 0.75; }
+    80% { opacity: 0.85; }
     100% { opacity: 0; }
   }
 
@@ -192,11 +200,12 @@
   .sparkle {
     position: fixed;
     pointer-events: none;
-    width: 4px;
-    height: 4px;
-    background: #00ff00;
+    width: 3px;
+    height: 3px;
+    background: #EFFFFF;
     border-radius: 50%;
     z-index: 9999;
+    box-shadow: 0 0 4px #1EAEDB, 0 0 8px rgba(14, 165, 233, 0.3);
     animation: sparkle 0.8s linear forwards;
   }
 

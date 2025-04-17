@@ -1,14 +1,22 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import "../assets/cursor.css";
 
 const NotFound = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // Apply cursor to entire document
+    document.body.classList.add("cursor-custom");
+    
     console.error(
       "404 Error: User attempted to access non-existent route:",
       location.pathname
     );
+    
+    return () => {
+      document.body.classList.remove("cursor-custom");
+    };
   }, [location.pathname]);
 
   return (
