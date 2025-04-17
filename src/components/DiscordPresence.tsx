@@ -128,8 +128,9 @@ const DiscordPresence = () => {
   
   const displayName = discord_user.global_name || discord_user.username;
 
-  // Filter activities to exclude custom status (type 4) if other activities exist
-  const nonCustomStatusActivities = activities.filter(act => act.type !== 4);
+  // Filter activities to identify custom status and other activities
+  const customStatusActivity = activities.find(act => act.type === 4);
+  const otherActivities = activities.filter(act => act.type !== 4);
   
   // Get the current activity - prioritize non-custom activities or Spotify
   let currentActivity = null;
@@ -140,20 +141,9 @@ const DiscordPresence = () => {
       details: `by ${spotify.artist}`,
       assets: { large_image: spotify.album_art_url }
     };
-  } else if (nonCustomStatusActivities.length > 0) {
-    currentActivity = nonCustomStatusActivities[0];
+  } else if (otherActivities.length > 0) {
+    currentActivity = otherActivities[0];
   }
-
-  // Only show custom status if there are no other activities
-  const customStatusWithEmoji = activities.find(act => act.type === 4 && act.emoji);
-  const showCustomStatus = !currentActivity && customStatusWithEmoji;
-  
-  if (showCustomStatus && customStatusWithEmoji) {
-    currentActivity = customStatusWithEmoji;
-  }
-
-  // Get custom emoji from the custom status activity
-  const customEmoji = customStatusWithEmoji?.emoji;
 
   return (
     <TiltCard className="mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm">
@@ -166,45 +156,62 @@ const DiscordPresence = () => {
           />
           <div className={`absolute bottom-0 right-0 w-3 h-3 ${getStatusColor(discord_status)} rounded-full border border-black`}></div>
         </div>
-        <div className="text-left flex items-center">
-          <div className="text-[#00ff00] font-medium">{displayName}</div>
-          {/* Discord Nitro icon */}
-          <HoverCard>
-            <HoverCardTrigger>
-              <Sparkles className="ml-1 w-4 h-4 text-[#00aeff]" />
-            </HoverCardTrigger>
-            <HoverCardContent className="w-32 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00]/80 text-xs">
-              Discord Nitro
-            </HoverCardContent>
-          </HoverCard>
+        <div className="text-left flex flex-col">
+          <div className="flex items-center">
+            <div className="text-[#00ff00] font-medium">{displayName}</div>
+            {/* Discord Nitro icon */}
+            <HoverCard>
+              <HoverCardTrigger>
+                <svg
+                  className="ml-1 w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"
+                    fill="#5865F2"
+                  />
+                  <path
+                    d="M17 7.5c-1 1.5-2.5 3-5 3s-4-1.5-5-3l-1 3.5 2 4.5s2.5 2 4 2 4-2 4-2l2-4.5-1-3.5z"
+                    fill="white"
+                  />
+                </svg>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-32 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00]/80 text-xs">
+                Discord Nitro
+              </HoverCardContent>
+            </HoverCard>
+          </div>
+          
+          {/* Custom Status with Emoji below username */}
+          {customStatusActivity?.emoji && (
+            <div className="text-[#00ff00]/70 text-xs flex items-center mt-1">
+              <img 
+                src={`https://cdn.discordapp.com/emojis/${customStatusActivity.emoji.id}.${customStatusActivity.emoji.animated ? 'gif' : 'png'}`} 
+                alt={customStatusActivity.emoji.name} 
+                className="w-4 h-4 mr-1"
+              />
+              {customStatusActivity.state && <span>{customStatusActivity.state}</span>}
+            </div>
+          )}
         </div>
       </div>
       
-      {currentActivity && (
+      {/* Only show activity section if there's a current activity (not custom status) */}
+      {currentActivity && currentActivity.type !== 4 && (
         <div className="mt-2 border-t border-[#00ff00]/20 pt-2">
           <div className="flex items-center justify-center">
-            {currentActivity.type !== 4 ? (
-              currentActivity.type === 2 ? (
-                <Music className="w-5 h-5 text-[#00ff00]" />
-              ) : (
-                <Gamepad className="w-5 h-5 text-[#00ff00]" />
-              )
-            ) : currentActivity.emoji ? (
-              <img 
-                src={`https://cdn.discordapp.com/emojis/${currentActivity.emoji.id}.${currentActivity.emoji.animated ? 'gif' : 'png'}`} 
-                alt={currentActivity.emoji.name} 
-                className="w-5 h-5 text-[#00ff00]"
-              />
+            {currentActivity.type === 2 ? (
+              <Music className="w-5 h-5 text-[#00ff00]" />
             ) : (
-              <Activity className="w-5 h-5 text-[#00ff00]" />
+              <Gamepad className="w-5 h-5 text-[#00ff00]" />
             )}
             
             <div className="ml-2 text-left">
-              {currentActivity.type !== 4 && (
-                <div className="text-[#00ff00]/90 text-sm">
-                  {activityTypes[currentActivity.type]} {currentActivity.name}
-                </div>
-              )}
+              <div className="text-[#00ff00]/90 text-sm">
+                {activityTypes[currentActivity.type]} {currentActivity.name}
+              </div>
               
               {currentActivity.details && (
                 <div className="text-[#00ff00]/70 text-xs truncate max-w-[200px]">
