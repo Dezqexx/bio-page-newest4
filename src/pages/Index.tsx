@@ -1,5 +1,5 @@
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
 import RainEffect from "@/components/RainEffect";
@@ -11,6 +11,16 @@ const Index = () => {
   useSparkleEffect();
   const [entered, setEntered] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  
+  const handleEnter = () => {
+    setEntered(true);
+    
+    // Start playing audio when user enters
+    if (audioRef.current) {
+      audioRef.current.play()
+        .catch(err => console.error("Error starting audio:", err));
+    }
+  };
   
   return (
     <div className="min-h-screen flex items-center justify-center text-white relative overflow-hidden">
@@ -31,7 +41,7 @@ const Index = () => {
           age={19}
         />
       ) : (
-        <EnterScreen onEnter={() => setEntered(true)} />
+        <EnterScreen onEnter={handleEnter} />
       )}
     </div>
   );

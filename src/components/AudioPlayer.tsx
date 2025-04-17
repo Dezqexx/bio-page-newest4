@@ -16,14 +16,41 @@ const AudioPlayer = ({ audioUrl, autoplay = false, audioRef: externalAudioRef }:
   const audioRef = externalAudioRef || internalAudioRef;
 
   useEffect(() => {
+    // Add event listener to handle playback state changes
+    const handlePlayStateChange = () => {
+      if (audioRef.current) {
+        setIsPlaying(!audioRef.current.paused);
+      }
+    };
+
+    // Set up event listeners
+    if (audioRef.current) {
+      audioRef.current.addEventListener('play', handlePlayStateChange);
+      audioRef.current.addEventListener('pause', handlePlayStateChange);
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.removeEventListener('play', handlePlayStateChange);
+        audioRef.current.removeEventListener('pause', handlePlayStateChange);
+      }
+    };
+  }, [audioRef]);
+
+  useEffect(() => {
     if (autoplay && audioRef.current) {
-      audioRef.current.play()
-        .then(() => {
-          setIsPlaying(true);
-        })
-        .catch(err => {
-          console.error("Failed to autoplay audio:", err);
-        });
+      const playPromise = audioRef.current.play();
+      
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log("Audio playback started successfully");
+            setIsPlaying(true);
+          })
+          .catch(err => {
+            console.error("Failed to autoplay audio:", err);
+          });
+      }
     }
   }, [autoplay, audioRef]);
 
@@ -32,9 +59,11 @@ const AudioPlayer = ({ audioUrl, autoplay = false, audioRef: externalAudioRef }:
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        audioRef.current.play();
+        audioRef.current.play()
+          .catch(err => {
+            console.error("Error playing audio:", err);
+          });
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -50,8 +79,9 @@ const AudioPlayer = ({ audioUrl, autoplay = false, audioRef: externalAudioRef }:
           <VolumeX className="w-6 h-6 text-[#00ff00]" />
         )}
       </button>
-      <audio ref={audioRef} loop>
+      <audio ref={audioRef} loop preload="auto">
         <source src={audioUrl} type="audio/mpeg" />
+        Your browser does not support the audio element.
       </audio>
     </div>
   );

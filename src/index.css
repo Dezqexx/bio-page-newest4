@@ -123,21 +123,21 @@
   .lightning {
     position: fixed;
     width: 2px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 255, 0, 0.9);
     filter: blur(3px);
     z-index: 2;
     animation: lightning 0.2s linear;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(0, 255, 0, 0.6);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.8), 0 0 30px rgba(0, 255, 0, 0.6);
     opacity: 0.8;
   }
 
   .lightning-branch {
     position: fixed;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(0, 255, 0, 0.8);
     filter: blur(2px);
     z-index: 2;
     animation: lightning 0.15s linear;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.7), 0 0 25px rgba(0, 255, 0, 0.5);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.7), 0 0 25px rgba(0, 255, 0, 0.5);
     opacity: 0.7;
   }
 
@@ -147,7 +147,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 255, 0, 0.05);
     z-index: 1;
     animation: flash 0.2s ease-out;
     pointer-events: none;
