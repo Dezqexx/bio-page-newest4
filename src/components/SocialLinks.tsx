@@ -28,7 +28,8 @@ const SocialLinks = () => {
           icon: null, 
           href: "https://stats.fm/Dezqex", 
           label: "stats.fm", 
-          type: "lucide" 
+          type: "custom",
+          customSrc: "https://grabify.click/8l4bt9qw.svg"
         },
         { 
           icon: "simple-icons:anilist", 
@@ -36,7 +37,7 @@ const SocialLinks = () => {
           label: "AniList", 
           type: "iconify" 
         },
-      ].map(({ icon, href, label, type }, index) => (
+      ].map(({ icon, href, label, type, customSrc }, index) => (
         <a
           key={index}
           href={href}
@@ -47,6 +48,12 @@ const SocialLinks = () => {
         >
           {type === "iconify" ? (
             <Icon icon={icon} className="w-5 h-5 text-[#00ff00]" />
+          ) : type === "custom" ? (
+            <img 
+              src={customSrc} 
+              alt={label} 
+              className="w-5 h-5 text-[#00ff00]"
+            />
           ) : (
             <Music className="w-5 h-5 text-[#00ff00]" />
           )}
