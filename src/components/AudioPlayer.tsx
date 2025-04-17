@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { Slider } from "@/components/ui/slider";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface AudioPlayerProps {
   audioUrl: string;
@@ -62,7 +63,7 @@ const AudioPlayer = ({ audioUrl, autoplay = false, isVisible }: AudioPlayerProps
         )}
       </button>
 
-      <div className="h-24 bg-black/20 backdrop-blur-sm border border-[#9b87f5]/20 rounded-full p-2">
+      <div className="h-24 bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 rounded-full p-2">
         <Slider
           defaultValue={[1]}
           value={[volume]}
@@ -71,9 +72,6 @@ const AudioPlayer = ({ audioUrl, autoplay = false, isVisible }: AudioPlayerProps
           orientation="vertical"
           className="h-20"
           onValueChange={handleVolumeChange}
-          trackClassName="bg-[#6E59A5]/30"
-          rangeClassName="bg-[#9b87f5]"
-          thumbClassName="border-[#7E69AB] bg-[#D6BCFA]"
         />
       </div>
 
