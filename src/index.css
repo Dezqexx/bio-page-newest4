@@ -106,6 +106,13 @@
     filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.3));
   }
 
+  .border-glow {
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5), 
+                0 0 20px rgba(0, 255, 0, 0.2), 
+                inset 0 0 5px rgba(0, 255, 0, 0.1);
+    animation: pulse-border 3s infinite alternate;
+  }
+
   .cursor-custom {
     cursor: default; /* Optional: reset cursor to default */
   }
@@ -113,11 +120,11 @@
   .rain-drop {
     position: fixed;
     width: 2px;
-    height: 20px;
+    height: 30px; /* Longer rain drops */
     background: linear-gradient(transparent, #00ff00);
     z-index: 1;
     animation: rain linear forwards;
-    opacity: 0.5;
+    opacity: 0.7;
   }
 
   .lightning {
@@ -131,6 +138,21 @@
     box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff00;
   }
 
+  .lightning-path {
+    position: fixed;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .lightning-segment {
+    position: fixed;
+    background: linear-gradient(to bottom, #7bff7b, #00ff00);
+    z-index: 2;
+    animation: lightning 0.15s linear;
+    box-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00;
+    pointer-events: none;
+  }
+
   .lightning-branch {
     position: fixed;
     width: 3px;
@@ -138,8 +160,9 @@
     background: #00ff00;
     filter: blur(3px);
     z-index: 2;
-    animation: lightning 0.2s linear;
+    animation: lightning 0.15s linear;
     box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+    pointer-events: none;
   }
 
   @keyframes lightning {
@@ -150,6 +173,19 @@
     50% { opacity: 0.3; }
     70% { opacity: 0.7; }
     100% { opacity: 0; }
+  }
+
+  @keyframes pulse-border {
+    0% {
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.5), 
+                  0 0 15px rgba(0, 255, 0, 0.2), 
+                  inset 0 0 5px rgba(0, 255, 0, 0.1);
+    }
+    100% {
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.8), 
+                  0 0 25px rgba(0, 255, 0, 0.4), 
+                  inset 0 0 10px rgba(0, 255, 0, 0.2);
+    }
   }
 
   @keyframes rain {
@@ -209,4 +245,9 @@ body {
     top: $(random(100))%;
     animation-delay: $(random(3))s;
   }
+}
+
+/* Custom cursor for enter text */
+.enter-text {
+  cursor: pointer !important;
 }
