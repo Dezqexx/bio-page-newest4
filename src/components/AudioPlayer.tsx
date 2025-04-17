@@ -5,14 +5,15 @@ import { Volume2, VolumeX } from 'lucide-react';
 interface AudioPlayerProps {
   audioUrl: string;
   autoplay?: boolean;
+  isVisible: boolean;
 }
 
-const AudioPlayer = ({ audioUrl, autoplay = false }: AudioPlayerProps) => {
+const AudioPlayer = ({ audioUrl, autoplay = false, isVisible }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    if (autoplay && audioRef.current) {
+    if (autoplay && audioRef.current && isVisible) {
       audioRef.current.play()
         .then(() => {
           setIsPlaying(true);
@@ -21,7 +22,7 @@ const AudioPlayer = ({ audioUrl, autoplay = false }: AudioPlayerProps) => {
           console.error("Failed to autoplay audio:", err);
         });
     }
-  }, [autoplay]);
+  }, [autoplay, isVisible]);
 
   const togglePlay = () => {
     if (audioRef.current) {
@@ -33,6 +34,8 @@ const AudioPlayer = ({ audioUrl, autoplay = false }: AudioPlayerProps) => {
       setIsPlaying(!isPlaying);
     }
   };
+
+  if (!isVisible) return null;
 
   return (
     <div className="fixed top-4 left-4">

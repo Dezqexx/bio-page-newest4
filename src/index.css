@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -127,14 +128,27 @@
     filter: blur(4px);
     z-index: 2;
     animation: lightning 0.2s linear;
-    box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+    box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff00;
+  }
+
+  .lightning-branch {
+    position: fixed;
+    width: 3px;
+    height: 50px;
+    background: #00ff00;
+    filter: blur(3px);
+    z-index: 2;
+    animation: lightning 0.2s linear;
+    box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
   }
 
   @keyframes lightning {
     0% { opacity: 0; }
     10% { opacity: 1; }
-    20% { opacity: 0; }
-    30% { opacity: 1; }
+    20% { opacity: 0.5; }
+    30% { opacity: 0.8; }
+    50% { opacity: 0.3; }
+    70% { opacity: 0.7; }
     100% { opacity: 0; }
   }
 
