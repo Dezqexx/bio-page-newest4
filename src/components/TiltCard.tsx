@@ -2,13 +2,18 @@
 import React, { useRef, useEffect } from 'react';
 import VanillaTilt from 'vanilla-tilt';
 
+// Add a type declaration for the HTMLDivElement with vanillaTilt property
+interface TiltElement extends HTMLDivElement {
+  vanillaTilt?: any;
+}
+
 interface TiltCardProps {
   children: React.ReactNode;
   className?: string;
 }
 
 const TiltCard = ({ children, className = "" }: TiltCardProps) => {
-  const tiltRef = useRef<HTMLDivElement>(null);
+  const tiltRef = useRef<TiltElement>(null);
   
   useEffect(() => {
     if (tiltRef.current) {
