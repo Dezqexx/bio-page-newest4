@@ -103,7 +103,7 @@ const DiscordPresence = () => {
 
   if (isLoading) {
     return (
-      <div className="mt-6 p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm animate-pulse">
+      <div className="mt-6 p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm animate-pulse max-w-[320px] w-full">
         <div className="flex items-center justify-center">
           <div className="h-8 w-36 bg-[#00ff00]/10 rounded"></div>
         </div>
@@ -113,7 +113,7 @@ const DiscordPresence = () => {
 
   if (error || !lanyardData) {
     return (
-      <div className="mt-6 p-4 border-2 border-[#00ff00]/20 rounded-lg bg-black/30 backdrop-blur-sm">
+      <div className="mt-6 p-4 border-2 border-[#00ff00]/20 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
         <div className="flex items-center justify-center">
           <MessageCircle className="w-5 h-5 text-[#00ff00]/50 mr-2" />
           <span className="text-[#00ff00]/50">Discord presence unavailable</span>
@@ -148,7 +148,7 @@ const DiscordPresence = () => {
 
   return (
     <TiltCard className="mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
-      <div className="flex items-center justify-center mb-3">
+      <div className="flex items-start pl-2 mb-3">
         <div className="relative mr-3">
           <img
             src={avatarUrl}
@@ -161,7 +161,13 @@ const DiscordPresence = () => {
           <div className="flex items-center">
             <div className="text-[#00ff00] font-medium">{displayName}</div>
             {/* Discord Nitro badge */}
-            <DiscordBadge type="nitro" />
+            <div className="ml-1">
+              <img src="https://I-love.goth-girls.online/m2zi1t30.svg" alt="Discord Nitro" className="w-5 h-5" />
+            </div>
+            {/* Server Boosting badge */}
+            <div className="ml-1">
+              <img src="https://your-mom-is-so-fat-we-couldnt-fit-her-in-this-doma.in/p8l5ur18.svg" alt="Server Boosting" className="w-5 h-5" />
+            </div>
           </div>
           
           {/* Custom Status with Emoji below username */}
