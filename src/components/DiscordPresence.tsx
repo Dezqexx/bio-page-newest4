@@ -92,17 +92,28 @@ const DiscordPresence = () => {
     }
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'online':
-        return 'Online';
-      case 'idle':
-        return 'Idle';
-      case 'dnd':
-        return 'Do Not Disturb';
-      default:
-        return 'Offline';
+  const renderStatusIndicator = (status: string) => {
+    if (status === 'dnd') {
+      // Render custom DND emoji for Do Not Disturb
+      return (
+        <div className="flex items-center bg-black/70 text-red-500 text-xs rounded px-2 py-0.5">
+          <div className="w-2 h-2 bg-red-500 rounded-full mr-1"></div>
+          Do Not Disturb
+        </div>
+      );
     }
+
+    const statusColor = getStatusColor(status);
+    const statusText = status === 'dnd' ? 'Do Not Disturb' : 
+                      status === 'online' ? 'Online' :
+                      status === 'idle' ? 'Idle' : 'Offline';
+    
+    return (
+      <div className="flex items-center text-xs text-[#00ff00]/70">
+        <div className={`w-2 h-2 ${statusColor} rounded-full mr-1`}></div>
+        {statusText}
+      </div>
+    );
   };
 
   const getActivityIcon = (type: number) => {
@@ -138,8 +149,6 @@ const DiscordPresence = () => {
   }
 
   const { discord_user, discord_status, activities, spotify, listening_to_spotify } = lanyardData.data;
-  const statusColor = getStatusColor(discord_status);
-  const statusText = getStatusText(discord_status);
   
   const avatarUrl = discord_user.avatar 
     ? `https://cdn.discordapp.com/avatars/${discord_user.id}/${discord_user.avatar}.png?size=128`
@@ -147,7 +156,10 @@ const DiscordPresence = () => {
   
   const displayName = discord_user.global_name || discord_user.username;
 
-  // Current activity (prioritize Spotify, then other activities)
+  // Filter activities to exclude custom status (type 4) if other activities exist or if custom status is the only activity
+  const nonCustomStatusActivities = activities.filter(act => act.type !== 4);
+  
+  // Get the current activity - prioritize non-custom activities or Spotify
   let currentActivity = null;
   if (listening_to_spotify && spotify) {
     currentActivity = {
@@ -156,10 +168,17 @@ const DiscordPresence = () => {
       details: `by ${spotify.artist}`,
       assets: { large_image: spotify.album_art_url }
     };
-  } else if (activities && activities.length > 0) {
-    // Filter out custom status (type 4) if there are other activities
-    const nonCustomActivities = activities.filter(act => act.type !== 4);
-    currentActivity = nonCustomActivities.length > 0 ? nonCustomActivities[0] : activities[0];
+  } else if (nonCustomStatusActivities.length > 0) {
+    currentActivity = nonCustomStatusActivities[0];
+  }
+
+  // Only show custom status if there are no other activities
+  const showCustomStatus = activities.length > 0 && nonCustomStatusActivities.length === 0 && !currentActivity;
+  if (showCustomStatus) {
+    const customStatus = activities.find(act => act.type === 4);
+    if (customStatus) {
+      currentActivity = customStatus;
+    }
   }
 
   return (
@@ -171,14 +190,11 @@ const DiscordPresence = () => {
             alt={displayName}
             className="w-10 h-10 rounded-full border border-[#00ff00]/30"
           />
-          <div className={`absolute bottom-0 right-0 w-3 h-3 ${statusColor} rounded-full border border-black`}></div>
+          <div className={`absolute bottom-0 right-0 w-3 h-3 ${discord_status === 'dnd' ? 'bg-red-500' : getStatusColor(discord_status)} rounded-full border border-black`}></div>
         </div>
         <div className="text-left">
           <div className="text-[#00ff00] font-medium">{displayName}</div>
-          <div className="flex items-center text-xs text-[#00ff00]/70">
-            <div className={`w-2 h-2 ${statusColor} rounded-full mr-1`}></div>
-            {statusText}
-          </div>
+          {renderStatusIndicator(discord_status)}
         </div>
       </div>
 
