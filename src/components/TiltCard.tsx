@@ -36,7 +36,7 @@ const TiltCard = ({ children, className = "" }: TiltCardProps) => {
   return (
     <div 
       ref={tiltRef} 
-      className={`${className} tilt-card`}
+      className={`${className} tilt-card cursor-default`}
       style={{ boxShadow: '0 0 15px 2px rgba(0, 255, 0, 0.3)' }}
     >
       {children}

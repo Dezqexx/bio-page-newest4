@@ -6,11 +6,36 @@ const SocialLinks = () => {
   return (
     <div className="flex gap-4 mt-6">
       {[
-        { icon: "mdi:steam", href: "#", label: "Steam", type: "iconify" },
-        { icon: "ic:baseline-discord", href: "#", label: "Discord", type: "iconify" },
-        { icon: "mdi:spotify", href: "#", label: "Spotify", type: "iconify" },
-        { icon: null, href: "https://stats.fm/", label: "stats.fm", type: "lucide" },
-        { icon: "simple-icons:anilist", href: "#", label: "AniList", type: "iconify" },
+        { 
+          icon: "mdi:steam", 
+          href: "https://steamcommunity.com/id/Dezqex_", 
+          label: "Steam", 
+          type: "iconify" 
+        },
+        { 
+          icon: "ic:baseline-discord", 
+          href: "https://discord.com/users/790718755931815947/", 
+          label: "Discord", 
+          type: "iconify" 
+        },
+        { 
+          icon: "mdi:spotify", 
+          href: "https://open.spotify.com/user/31yejccpio46ekbtukq5qsx4o7sa", 
+          label: "Spotify", 
+          type: "iconify" 
+        },
+        { 
+          icon: null, 
+          href: "https://stats.fm/Dezqex", 
+          label: "stats.fm", 
+          type: "lucide" 
+        },
+        { 
+          icon: "simple-icons:anilist", 
+          href: "https://anilist.co/user/Dezqex", 
+          label: "AniList", 
+          type: "iconify" 
+        },
       ].map(({ icon, href, label, type }, index) => (
         <a
           key={index}
