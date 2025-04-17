@@ -36,7 +36,7 @@ const Index = () => {
       
       {entered ? (
         <div className="flex flex-col items-center">
-          <TiltCard className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm">
+          <TiltCard className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
             <div className="w-32 h-32 mx-auto mb-6 rounded-full border-2 border-[#00ff00] overflow-hidden glow">
               <img
                 src="https://grabify.click/q52w52ry.png"

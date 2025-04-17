@@ -5,6 +5,7 @@ import { Activity, MessageCircle, Gamepad, Music, Sparkles } from 'lucide-react'
 import { Badge } from '@/components/ui/badge';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import DiscordBadge from '@/components/DiscordBadge';
 
 interface LanyardData {
   data: {
@@ -146,42 +147,21 @@ const DiscordPresence = () => {
   }
 
   return (
-    <TiltCard className="mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm">
+    <TiltCard className="mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
       <div className="flex items-center justify-center mb-3">
         <div className="relative mr-3">
           <img
             src={avatarUrl}
             alt={displayName}
-            className="w-10 h-10 rounded-full border border-[#00ff00]/30"
+            className="w-12 h-12 rounded-full border border-[#00ff00]/30"
           />
           <div className={`absolute bottom-0 right-0 w-3 h-3 ${getStatusColor(discord_status)} rounded-full border border-black`}></div>
         </div>
         <div className="text-left flex flex-col">
           <div className="flex items-center">
             <div className="text-[#00ff00] font-medium">{displayName}</div>
-            {/* Discord Nitro icon */}
-            <HoverCard>
-              <HoverCardTrigger>
-                <svg
-                  className="ml-1 w-4 h-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"
-                    fill="#5865F2"
-                  />
-                  <path
-                    d="M17 7.5c-1 1.5-2.5 3-5 3s-4-1.5-5-3l-1 3.5 2 4.5s2.5 2 4 2 4-2 4-2l2-4.5-1-3.5z"
-                    fill="white"
-                  />
-                </svg>
-              </HoverCardTrigger>
-              <HoverCardContent className="w-32 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00]/80 text-xs">
-                Discord Nitro
-              </HoverCardContent>
-            </HoverCard>
+            {/* Discord Nitro badge */}
+            <DiscordBadge type="nitro" />
           </div>
           
           {/* Custom Status with Emoji below username */}
@@ -190,7 +170,7 @@ const DiscordPresence = () => {
               <img 
                 src={`https://cdn.discordapp.com/emojis/${customStatusActivity.emoji.id}.${customStatusActivity.emoji.animated ? 'gif' : 'png'}`} 
                 alt={customStatusActivity.emoji.name} 
-                className="w-4 h-4 mr-1"
+                className="w-5 h-5 mr-1"
               />
               {customStatusActivity.state && <span>{customStatusActivity.state}</span>}
             </div>
@@ -204,8 +184,12 @@ const DiscordPresence = () => {
           <div className="flex items-center justify-center">
             {currentActivity.type === 2 ? (
               <Music className="w-5 h-5 text-[#00ff00]" />
-            ) : (
+            ) : currentActivity.type === 0 ? (
               <Gamepad className="w-5 h-5 text-[#00ff00]" />
+            ) : currentActivity.type === 3 ? (
+              <Activity className="w-5 h-5 text-[#00ff00]" />
+            ) : (
+              <Sparkles className="w-5 h-5 text-[#00ff00]" />
             )}
             
             <div className="ml-2 text-left">
