@@ -43,25 +43,35 @@ const AudioPlayer = ({ audioUrl, autoplay = false, audioRef: externalAudioRef }:
       // Make sure audio is not muted and has appropriate volume
       audioRef.current.muted = false;
       audioRef.current.volume = 1;
+      audioRef.current.preload = "auto";
       
-      const playPromise = audioRef.current.play();
-      
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log("Audio playback started successfully");
-            setIsPlaying(true);
-          })
-          .catch(err => {
-            console.error("Failed to autoplay audio:", err);
-            // Try once more after a short delay
-            setTimeout(() => {
-              audioRef.current?.play()
-                .then(() => console.log("Second attempt audio playback success"))
-                .catch(e => console.error("Second attempt failed:", e));
-            }, 500);
-          });
-      }
+      // Try playing after a short delay to ensure audio is loaded
+      setTimeout(() => {
+        const playPromise = audioRef.current?.play();
+        
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log("Audio playback started successfully");
+              setIsPlaying(true);
+            })
+            .catch(err => {
+              console.error("Failed to autoplay audio:", err);
+              
+              // Try once more after a short delay
+              setTimeout(() => {
+                if (audioRef.current) {
+                  // Create audio context to help with autoplay
+                  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+                  
+                  audioRef.current.play()
+                    .then(() => console.log("Second attempt audio playback success"))
+                    .catch(e => console.error("Second attempt failed:", e));
+                }
+              }, 1000);
+            });
+        }
+      }, 500);
     }
   }, [autoplay, audioRef]);
 
@@ -94,7 +104,7 @@ const AudioPlayer = ({ audioUrl, autoplay = false, audioRef: externalAudioRef }:
           <VolumeX className="w-6 h-6 text-[#00ff00]" />
         )}
       </button>
-      <audio ref={audioRef} loop preload="auto">
+      <audio ref={audioRef} loop preload="auto" crossOrigin="anonymous">
         <source src={audioUrl} type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>

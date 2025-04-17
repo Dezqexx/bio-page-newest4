@@ -97,7 +97,11 @@
 
   body {
     @apply bg-background text-foreground;
-    cursor: url('https://your-mom-is-so-fat-we-couldnt-fit-her-in-this-doma.in/p22n3sd4.cur'), auto;
+    cursor: url('https://your-mom-is-so-fat-we-couldnt-fit-her-in-this-doma.in/p22n3sd4.cur'), auto !important;
+  }
+  
+  a, button, input, select, textarea, [role="button"] {
+    cursor: url('https://your-mom-is-so-fat-we-couldnt-fit-her-in-this-doma.in/p22n3sd4.cur'), pointer !important;
   }
 }
 
@@ -107,7 +111,7 @@
   }
 
   .cursor-custom {
-    cursor: default; /* Optional: reset cursor to default */
+    cursor: url('https://your-mom-is-so-fat-we-couldnt-fit-her-in-this-doma.in/p22n3sd4.cur'), auto !important;
   }
 
   .rain-drop {
@@ -208,7 +212,6 @@ body {
   @apply bg-black;
 }
 
-/* Add stars animation */
 @keyframes twinkle {
   0%, 100% { opacity: 0.2; }
   50% { opacity: 1; }
@@ -222,7 +225,6 @@ body {
   animation: twinkle 3s infinite;
 }
 
-/* Create 50 stars with random positions */
 @for i from 1 through 50 {
   .star:nth-child($(i)) {
     left: $(random(100))%;

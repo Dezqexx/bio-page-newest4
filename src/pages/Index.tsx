@@ -29,11 +29,28 @@ const Index = () => {
       if (audioRef.current) {
         // Set volume to audible level and play
         audioRef.current.volume = 1;
+        audioRef.current.muted = false;
+        
+        // Create context first to help with autoplay policies
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        
         audioRef.current.play()
           .then(() => console.log("Audio playback started successfully"))
-          .catch(err => console.error("Error starting audio:", err));
+          .catch(err => {
+            console.error("Error starting audio:", err);
+            
+            // Try again with user interaction simulation
+            document.addEventListener('click', function playOnClick() {
+              if (audioRef.current) {
+                audioRef.current.play()
+                  .then(() => console.log("Audio playback started on click"))
+                  .catch(e => console.error("Still failed after click:", e));
+              }
+              document.removeEventListener('click', playOnClick);
+            }, { once: true });
+          });
       }
-    }, 100);
+    }, 300);
   };
   
   return (
