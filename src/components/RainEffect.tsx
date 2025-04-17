@@ -102,12 +102,11 @@ const RainEffect = () => {
         }
       }
 
-      const flashIntensity = 0.1 + Math.random() * 0.15;
+      const flashIntensity = 0.05 + Math.random() * 0.1;
       const flash = document.createElement('div');
       flash.className = 'lightning-flash';
       
-      // Change flash background to neon green with varying intensity
-      flash.style.background = `rgba(57, 255, 20, ${flashIntensity})`; // Neon green color
+      flash.style.background = `rgba(57, 255, 20, ${flashIntensity})`;
       
       document.body.appendChild(flash);
       
