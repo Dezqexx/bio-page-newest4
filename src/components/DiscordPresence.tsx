@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import TiltCard from '@/components/TiltCard';
-import { Activity, MessageCircle, Gamepad, Music } from 'lucide-react';
+import { Activity, MessageCircle, Gamepad, Music, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
@@ -100,47 +100,6 @@ const DiscordPresence = () => {
     }
   };
 
-  const renderStatusIndicator = (status: string) => {
-    const statusColor = getStatusColor(status);
-    const statusText = status === 'online' ? 'Online' :
-                      status === 'idle' ? 'Idle' : 'Offline';
-    
-    // Check if user has custom status with emoji
-    const customStatusActivity = lanyardData?.data.activities.find(act => act.type === 4 && act.emoji);
-    
-    if (status === 'dnd' && customStatusActivity?.emoji) {
-      // Render custom emoji for DND status
-      return (
-        <div className="flex items-center text-xs text-[#00ff00]/70">
-          <img 
-            src={`https://cdn.discordapp.com/emojis/${customStatusActivity.emoji.id}.${customStatusActivity.emoji.animated ? 'gif' : 'png'}`} 
-            alt={customStatusActivity.emoji.name}
-            className="w-4 h-4 mr-1"
-          />
-          <span>{status === 'dnd' ? 'DND' : statusText}</span>
-        </div>
-      );
-    }
-    
-    return (
-      <div className="flex items-center text-xs text-[#00ff00]/70">
-        <div className={`w-2 h-2 ${statusColor} rounded-full mr-1`}></div>
-        {statusText}
-      </div>
-    );
-  };
-
-  const getActivityIcon = (type: number) => {
-    switch (type) {
-      case 0:
-        return <Gamepad className="w-5 h-5 text-[#00ff00]" />;
-      case 2:
-        return <Music className="w-5 h-5 text-[#00ff00]" />;
-      default:
-        return <Activity className="w-5 h-5 text-[#00ff00]" />;
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="mt-6 p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm animate-pulse">
@@ -164,9 +123,8 @@ const DiscordPresence = () => {
 
   const { discord_user, discord_status, activities, spotify, listening_to_spotify } = lanyardData.data;
   
-  const avatarUrl = discord_user.avatar 
-    ? `https://cdn.discordapp.com/avatars/${discord_user.id}/${discord_user.avatar}.png?size=128`
-    : `https://cdn.discordapp.com/embed/avatars/${parseInt(discord_user.discriminator) % 5}.png`;
+  // Use the provided avatar URL directly
+  const avatarUrl = "https://cdn.discordapp.com/avatars/790718755931815947/a_86e001b599ecf28ab775d89b9a3e1dce.gif?size=4096";
   
   const displayName = discord_user.global_name || discord_user.username;
 
@@ -186,9 +144,9 @@ const DiscordPresence = () => {
     currentActivity = nonCustomStatusActivities[0];
   }
 
-  // Only show custom status if explicitly requested by user and there are no other activities
+  // Only show custom status if there are no other activities
   const customStatusWithEmoji = activities.find(act => act.type === 4 && act.emoji);
-  const showCustomStatus = activities.length > 0 && nonCustomStatusActivities.length === 0 && !currentActivity && customStatusWithEmoji;
+  const showCustomStatus = !currentActivity && customStatusWithEmoji;
   
   if (showCustomStatus && customStatusWithEmoji) {
     currentActivity = customStatusWithEmoji;
@@ -208,31 +166,29 @@ const DiscordPresence = () => {
           />
           <div className={`absolute bottom-0 right-0 w-3 h-3 ${getStatusColor(discord_status)} rounded-full border border-black`}></div>
         </div>
-        <div className="text-left">
+        <div className="text-left flex items-center">
           <div className="text-[#00ff00] font-medium">{displayName}</div>
-          {renderStatusIndicator(discord_status)}
+          {/* Discord Nitro icon */}
+          <HoverCard>
+            <HoverCardTrigger>
+              <Sparkles className="ml-1 w-4 h-4 text-[#00aeff]" />
+            </HoverCardTrigger>
+            <HoverCardContent className="w-32 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00]/80 text-xs">
+              Discord Nitro
+            </HoverCardContent>
+          </HoverCard>
         </div>
       </div>
       
-      {/* Badges row - from the screenshot */}
-      <div className="flex justify-center gap-2 my-2">
-        <HoverCard>
-          <HoverCardTrigger>
-            <Badge className="bg-gradient-to-r from-purple-600 to-purple-900 border-none">
-              <img src="/lovable-uploads/af39200b-e516-4516-bb11-8b7ef28b92a4.png" alt="Badges" className="h-5" />
-            </Badge>
-          </HoverCardTrigger>
-          <HoverCardContent className="w-48 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00]/80 text-xs">
-            Special Discord Badges
-          </HoverCardContent>
-        </HoverCard>
-      </div>
-
       {currentActivity && (
         <div className="mt-2 border-t border-[#00ff00]/20 pt-2">
           <div className="flex items-center justify-center">
             {currentActivity.type !== 4 ? (
-              getActivityIcon(currentActivity.type)
+              currentActivity.type === 2 ? (
+                <Music className="w-5 h-5 text-[#00ff00]" />
+              ) : (
+                <Gamepad className="w-5 h-5 text-[#00ff00]" />
+              )
             ) : currentActivity.emoji ? (
               <img 
                 src={`https://cdn.discordapp.com/emojis/${currentActivity.emoji.id}.${currentActivity.emoji.animated ? 'gif' : 'png'}`} 
