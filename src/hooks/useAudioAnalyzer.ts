@@ -14,21 +14,28 @@ const useAudioAnalyzer = ({ audioRef }: AudioAnalyzerProps) => {
   const isSetupDone = useRef(false);
 
   useEffect(() => {
+    // Skip setup if no audio element or already done
     if (!audioRef.current || isSetupDone.current) return;
     
+    // Setup function will be called once audio can play
     const setupAnalyzer = () => {
       if (!audioRef.current || isSetupDone.current) return;
       
       try {
+        // Wait until the audio element is properly loaded
+        if (audioRef.current.readyState < 2) {
+          return; // Not ready yet, wait for canplay event
+        }
+        
         // Create audio context
         const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
         audioContextRef.current = audioContext;
-
-        // Create analyzer node
+        
+        // Create analyzer node with smaller FFT size for better performance
         const analyzer = audioContext.createAnalyser();
-        analyzer.fftSize = 256;
+        analyzer.fftSize = 64; // Smaller FFT size
         analyzerRef.current = analyzer;
-
+        
         // Connect audio to analyzer
         const audioSource = audioContext.createMediaElementSource(audioRef.current);
         sourceRef.current = audioSource;
@@ -36,43 +43,40 @@ const useAudioAnalyzer = ({ audioRef }: AudioAnalyzerProps) => {
         analyzer.connect(audioContext.destination);
         
         isSetupDone.current = true;
-        
-        // Begin analysis after setup
-        analyzeAudio();
-        
         console.log("Audio analyzer setup successfully");
+        
+        // Start analysis
+        analyzeAudio();
       } catch (err) {
         console.error("Error setting up audio analyzer:", err);
       }
     };
 
-    // Function to analyze audio
     const analyzeAudio = () => {
       if (!analyzerRef.current) return;
       
-      const dataArray = new Uint8Array(analyzerRef.current.frequencyBinCount);
-      analyzerRef.current.getByteFrequencyData(dataArray);
-      
-      // Focus on bass frequencies (roughly the first 5-10% of frequency bins)
-      const bassFrequencies = dataArray.slice(0, Math.floor(dataArray.length * 0.1));
-      const averageBass = 
-        bassFrequencies.reduce((acc, val) => acc + val, 0) / bassFrequencies.length;
-      
-      // Normalize to 0-1 range and apply some easing
-      const normalizedBass = Math.min(1, averageBass / 200);
-      setBassLevel(normalizedBass);
-      
-      animationRef.current = requestAnimationFrame(analyzeAudio);
+      try {
+        const dataArray = new Uint8Array(analyzerRef.current.frequencyBinCount);
+        analyzerRef.current.getByteFrequencyData(dataArray);
+        
+        // Simplified bass detection (first few bins only)
+        const bassValue = dataArray[1] || 0; // Just use the second bin for bass
+        const normalizedBass = bassValue / 255; // Normalize to 0-1
+        
+        setBassLevel(normalizedBass);
+        animationRef.current = requestAnimationFrame(analyzeAudio);
+      } catch (e) {
+        console.error("Error in audio analysis:", e);
+      }
     };
 
-    // Set up analyzer when audio is ready
+    // Try setting up when the component mounts
     if (audioRef.current.readyState >= 2) {
       setupAnalyzer();
-    } else {
-      audioRef.current.addEventListener('canplay', setupAnalyzer, { once: true });
     }
 
-    // Start analyzing when audio plays
+    // Set up event listeners
+    const handleCanPlay = () => setupAnalyzer();
     const handlePlay = () => {
       if (audioContextRef.current?.state === 'suspended') {
         audioContextRef.current.resume();
@@ -80,31 +84,25 @@ const useAudioAnalyzer = ({ audioRef }: AudioAnalyzerProps) => {
       
       if (!isSetupDone.current) {
         setupAnalyzer();
-      } else {
+      } else if (!animationRef.current) {
         analyzeAudio();
       }
     };
 
-    const handlePause = () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-
+    audioRef.current.addEventListener('canplay', handleCanPlay);
     audioRef.current.addEventListener('play', handlePlay);
-    audioRef.current.addEventListener('pause', handlePause);
 
     return () => {
       if (audioRef.current) {
-        audioRef.current.removeEventListener('canplay', setupAnalyzer);
+        audioRef.current.removeEventListener('canplay', handleCanPlay);
         audioRef.current.removeEventListener('play', handlePlay);
-        audioRef.current.removeEventListener('pause', handlePause);
       }
       
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
       
+      // Properly clean up audio nodes
       if (sourceRef.current) {
         sourceRef.current.disconnect();
       }
@@ -113,7 +111,7 @@ const useAudioAnalyzer = ({ audioRef }: AudioAnalyzerProps) => {
         analyzerRef.current.disconnect();
       }
       
-      if (audioContextRef.current) {
+      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
         audioContextRef.current.close();
       }
     };

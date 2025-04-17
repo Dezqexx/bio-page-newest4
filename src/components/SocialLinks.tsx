@@ -21,9 +21,9 @@ const SocialLinks = () => {
           title={label}
         >
           {type === "iconify" ? (
-            <Icon icon={icon} className="w-5 h-5 text-[#00ff00]" />
+            <Icon icon={icon} className="w-5 h-5 text-[#00ff00] cursor-custom" />
           ) : (
-            <Music className="w-5 h-5 text-[#00ff00]" />
+            <Music className="w-5 h-5 text-[#00ff00] cursor-custom" />
           )}
         </a>
       ))}

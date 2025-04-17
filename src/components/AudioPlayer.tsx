@@ -37,44 +37,6 @@ const AudioPlayer = ({ audioUrl, autoplay = false, audioRef: externalAudioRef }:
     };
   }, [audioRef]);
 
-  // Initialize audio playback when component mounts or autoplay changes
-  useEffect(() => {
-    if (autoplay && audioRef.current) {
-      // Make sure audio is not muted and has appropriate volume
-      audioRef.current.muted = false;
-      audioRef.current.volume = 1;
-      audioRef.current.preload = "auto";
-      
-      // Try playing after a short delay to ensure audio is loaded
-      setTimeout(() => {
-        const playPromise = audioRef.current?.play();
-        
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              console.log("Audio playback started successfully");
-              setIsPlaying(true);
-            })
-            .catch(err => {
-              console.error("Failed to autoplay audio:", err);
-              
-              // Try once more after a short delay
-              setTimeout(() => {
-                if (audioRef.current) {
-                  // Create audio context to help with autoplay
-                  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-                  
-                  audioRef.current.play()
-                    .then(() => console.log("Second attempt audio playback success"))
-                    .catch(e => console.error("Second attempt failed:", e));
-                }
-              }, 1000);
-            });
-        }
-      }, 500);
-    }
-  }, [autoplay, audioRef]);
-
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -84,6 +46,7 @@ const AudioPlayer = ({ audioUrl, autoplay = false, audioRef: externalAudioRef }:
         audioRef.current.muted = false;
         audioRef.current.volume = 1;
         
+        // Try to play the audio
         audioRef.current.play()
           .catch(err => {
             console.error("Error playing audio:", err);
@@ -96,12 +59,12 @@ const AudioPlayer = ({ audioUrl, autoplay = false, audioRef: externalAudioRef }:
     <div className="fixed top-4 left-4">
       <button
         onClick={togglePlay}
-        className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
+        className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300 cursor-custom"
       >
         {isPlaying ? (
-          <Volume2 className="w-6 h-6 text-[#00ff00]" />
+          <Volume2 className="w-6 h-6 text-[#00ff00] cursor-custom" />
         ) : (
-          <VolumeX className="w-6 h-6 text-[#00ff00]" />
+          <VolumeX className="w-6 h-6 text-[#00ff00] cursor-custom" />
         )}
       </button>
       <audio ref={audioRef} loop preload="auto" crossOrigin="anonymous">

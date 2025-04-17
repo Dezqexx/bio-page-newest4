@@ -56,19 +56,18 @@ const AudioReactiveCard: React.FC<AudioReactiveCardProps> = ({
     });
   };
   
-  // Calculate border glow intensity based on bass level
-  const glowIntensity = 3 + bassLevel * 12; // Range from 3px to 15px
-  const glowOpacity = 0.5 + bassLevel * 0.5; // Range from 0.5 to 1.0
+  // Use a default value for border glow in case audio analysis fails
+  const glowIntensity = 5; 
+  const glowOpacity = 0.7;
   
   return (
     <div 
       ref={cardRef}
-      className="relative z-10 text-center p-8 rounded-lg bg-black/30 backdrop-blur-sm"
+      className="relative z-10 text-center p-8 rounded-lg bg-black/30 backdrop-blur-sm cursor-custom"
       style={{
         ...tiltStyle,
         boxShadow: `0 0 ${glowIntensity}px ${glowIntensity/2}px rgba(0, 255, 0, ${glowOpacity})`,
-        border: `2px solid rgba(0, 255, 0, ${0.5 + bassLevel * 0.5})`,
-        transition: 'box-shadow 0.1s ease, border 0.1s ease',
+        border: `2px solid rgba(0, 255, 0, 0.7)`,
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -76,7 +75,7 @@ const AudioReactiveCard: React.FC<AudioReactiveCardProps> = ({
       <div 
         className={cn(
           "w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden",
-          "border-2 border-[#00ff00]"
+          "border-2 border-[#00ff00] cursor-custom"
         )}
         style={{
           boxShadow: `0 0 ${glowIntensity}px rgba(0, 255, 0, ${glowOpacity})`,
@@ -85,23 +84,23 @@ const AudioReactiveCard: React.FC<AudioReactiveCardProps> = ({
         <img
           src={profileImage}
           alt="Profile"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover cursor-custom"
         />
       </div>
       
-      <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow">
+      <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow cursor-custom">
         {username}
       </h1>
       
-      <div className="flex flex-col items-center justify-center gap-2 text-[#00ff00]/80 mb-6">
-        <div className="flex items-center gap-2">
-          <MapPin className="w-4 h-4" />
-          <span>{location}</span>
+      <div className="flex flex-col items-center justify-center gap-2 text-[#00ff00]/80 mb-6 cursor-custom">
+        <div className="flex items-center gap-2 cursor-custom">
+          <MapPin className="w-4 h-4 cursor-custom" />
+          <span className="cursor-custom">{location}</span>
         </div>
         
-        <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4" />
-          <span>Age: {age}</span>
+        <div className="flex items-center gap-2 cursor-custom">
+          <Calendar className="w-4 h-4 cursor-custom" />
+          <span className="cursor-custom">Age: {age}</span>
         </div>
       </div>
 

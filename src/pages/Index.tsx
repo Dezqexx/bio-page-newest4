@@ -24,44 +24,49 @@ const Index = () => {
   const handleEnter = () => {
     setEntered(true);
     
-    // Start playing audio when user enters with a slight delay to ensure it works
+    // Start audio playback after a small delay to ensure DOM is ready
     setTimeout(() => {
       if (audioRef.current) {
-        // Set volume to audible level and play
-        audioRef.current.volume = 1;
-        audioRef.current.muted = false;
-        
-        // Create context first to help with autoplay policies
+        // Create audio context first to handle autoplay
         const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
         
-        audioRef.current.play()
-          .then(() => console.log("Audio playback started successfully"))
-          .catch(err => {
-            console.error("Error starting audio:", err);
-            
-            // Try again with user interaction simulation
-            document.addEventListener('click', function playOnClick() {
-              if (audioRef.current) {
-                audioRef.current.play()
-                  .then(() => console.log("Audio playback started on click"))
-                  .catch(e => console.error("Still failed after click:", e));
-              }
-              document.removeEventListener('click', playOnClick);
-            }, { once: true });
-          });
+        // Set appropriate properties for playback
+        audioRef.current.volume = 1;
+        audioRef.current.muted = false;
+        audioRef.current.crossOrigin = "anonymous";
+        
+        // Play audio with proper error handling
+        const playPromise = audioRef.current.play();
+        
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => console.log("Audio playback started successfully"))
+            .catch(err => {
+              console.error("Error starting audio:", err);
+              
+              // Add a click listener to the document for user interaction
+              document.addEventListener('click', function handleClick() {
+                if (audioRef.current) {
+                  audioRef.current.play()
+                    .then(() => console.log("Audio started on user interaction"))
+                    .catch(e => console.error("Still failed to play audio:", e));
+                }
+                document.removeEventListener('click', handleClick);
+              }, { once: true });
+            });
+        }
       }
-    }, 300);
+    }, 500);
   };
   
   return (
-    <div className="min-h-screen flex items-center justify-center text-white relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center text-white relative overflow-hidden cursor-custom">
       <RainEffect />
       <BackgroundVideo videoUrl="/your-video.mp4" />
       
-      {/* Only render the audio player after entering the site */}
       {entered && (
         <AudioPlayer 
-          audioUrl="https://Im-a.femboylover.com/54fplvig.mp3" 
+          audioUrl="https://Im-a.femboylover.com/54fplvig.mp3"
           autoplay={true}
           audioRef={audioRef}
         />
