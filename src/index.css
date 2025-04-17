@@ -120,35 +120,13 @@
     box-shadow: 0 0 4px rgba(0, 255, 0, 0.5), 0 0 8px rgba(57, 255, 20, 0.3);
   }
 
-  .lightning-main {
+  .lightning {
     position: fixed;
+    width: 100px;
     z-index: 2;
     pointer-events: none;
-    filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.8));
+    opacity: 0.9;
     animation: lightning-flicker 0.3s linear;
-  }
-
-  .lightning-segment {
-    position: absolute;
-    width: 3px;
-    background: #00ff00; 
-    box-shadow: 
-      0 0 5px #00ff00,
-      0 0 10px #39FF14, 
-      0 0 20px rgba(15, 255, 80, 0.5);
-    opacity: 0.95;
-  }
-
-  .lightning-branch {
-    position: absolute;
-    width: 2px;
-    background: #0FFF50; 
-    box-shadow: 
-      0 0 4px #00ff00,
-      0 0 8px #39FF14, 
-      0 0 12px rgba(15, 255, 80, 0.4);
-    opacity: 0.8;
-    pointer-events: none;
   }
 
   .lightning-flash {
@@ -236,4 +214,33 @@ body {
     top: $(random(100))%;
     animation-delay: $(random(3))s;
   }
+}
+
+/* Volume Slider styling */
+.volume-slider-container {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-left: 12px;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  visibility: hidden;
+  width: 120px;
+  pointer-events: none;
+}
+
+.volume-control-wrapper {
+  position: relative;
+}
+
+.volume-control-wrapper:hover .volume-slider-container {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
 }
