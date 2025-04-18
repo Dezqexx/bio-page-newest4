@@ -175,32 +175,8 @@ const DiscordPresence = () => {
       
       {currentActivity && currentActivity.type !== 4 && (
         <div className="mt-2 border-t border-[#00ff00]/20 pt-2">
-          <div className="flex items-center justify-center">
-            {currentActivity.type === 2 ? (
-              <Music className="w-5 h-5 text-[#00ff00]" />
-            ) : currentActivity.type === 0 ? (
-              <Gamepad className="w-5 h-5 text-[#00ff00]" />
-            ) : currentActivity.type === 3 ? (
-              <Activity className="w-5 h-5 text-[#00ff00]" />
-            ) : (
-              <Sparkles className="w-5 h-5 text-[#00ff00]" />
-            )}
-            
-            <div className="ml-2 text-left">
-              <div className="text-[#00ff00]/90 text-sm">
-                {activityTypes[currentActivity.type]} {currentActivity.name}
-              </div>
-              
-              {currentActivity.details && (
-                <div className="text-[#00ff00]/70 text-xs truncate max-w-[200px]">
-                  {currentActivity.details}
-                </div>
-              )}
-            </div>
-          </div>
-          
-          {currentActivity.assets?.large_image && (
-            <div className="mt-2 flex justify-center">
+          <div className="flex items-center">
+            {currentActivity.assets?.large_image && (
               <img
                 src={
                   currentActivity.assets.large_image.startsWith('spotify:')
@@ -212,13 +188,37 @@ const DiscordPresence = () => {
                       : `https://cdn.discordapp.com/app-assets/${currentActivity.type === 0 ? discord_user.id : 'spotify'}/${currentActivity.assets.large_image}.png`
                 }
                 alt={currentActivity.assets.large_text || currentActivity.name}
-                className="h-16 rounded-md border border-[#00ff00]/30"
+                className="h-12 w-12 rounded-md border border-[#00ff00]/30 mr-3"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                 }}
               />
+            )}
+            
+            <div className="flex items-center">
+              {currentActivity.type === 2 ? (
+                <Music className="w-5 h-5 text-[#00ff00] mr-2" />
+              ) : currentActivity.type === 0 ? (
+                <Gamepad className="w-5 h-5 text-[#00ff00] mr-2" />
+              ) : currentActivity.type === 3 ? (
+                <Activity className="w-5 h-5 text-[#00ff00] mr-2" />
+              ) : (
+                <Sparkles className="w-5 h-5 text-[#00ff00] mr-2" />
+              )}
+              
+              <div className="text-left">
+                <div className="text-[#00ff00]/90 text-sm">
+                  {activityTypes[currentActivity.type]} {currentActivity.name}
+                </div>
+                
+                {currentActivity.details && (
+                  <div className="text-[#00ff00]/70 text-xs truncate max-w-[200px]">
+                    {currentActivity.details}
+                  </div>
+                )}
+              </div>
             </div>
-          )}
+          </div>
         </div>
       )}
     </TiltCard>
