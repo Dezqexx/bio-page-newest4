@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import TiltCard from '@/components/TiltCard';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
@@ -116,6 +116,10 @@ const DiscordPresence = () => {
     return '';
   };
 
+  const openDiscordProfile = () => {
+    window.open(`https://discord.com/users/790718755931815947`, '_blank', 'noopener,noreferrer');
+  };
+
   if (isLoading) {
     return (
       <div className="mt-6 p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm animate-pulse max-w-[320px] w-full">
@@ -160,7 +164,7 @@ const DiscordPresence = () => {
 
   return (
     <TiltCard className="mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
-      <div className="flex items-start pl-2 mb-3">
+      <div className="flex items-start pl-2 mb-3 relative">
         <div className="relative mr-3">
           <img
             src={avatarUrl}
@@ -169,7 +173,7 @@ const DiscordPresence = () => {
           />
           <div className={`absolute bottom-0 right-0 w-3 h-3 ${getStatusColor(discord_status)} rounded-full border border-black`}></div>
         </div>
-        <div className="text-left flex flex-col">
+        <div className="text-left flex flex-col flex-grow">
           <div className="flex items-center">
             <div className="text-[#00ff00] font-medium">{displayName}</div>
             <div className="ml-1">
@@ -191,6 +195,23 @@ const DiscordPresence = () => {
             </div>
           )}
         </div>
+        
+        <HoverCard>
+          <HoverCardTrigger>
+            <button 
+              onClick={openDiscordProfile}
+              className="absolute top-0 right-0 text-[#00ff00] hover:text-[#39FF14] transition-colors duration-300 group"
+            >
+              <ArrowRight 
+                className="w-6 h-6 group-hover:scale-110 transition-transform" 
+                strokeWidth={3}
+              />
+            </button>
+          </HoverCardTrigger>
+          <HoverCardContent className="w-32 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00]/80 text-xs">
+            Open Discord Profile
+          </HoverCardContent>
+        </HoverCard>
       </div>
       
       {currentActivity && currentActivity.type !== 4 && (
