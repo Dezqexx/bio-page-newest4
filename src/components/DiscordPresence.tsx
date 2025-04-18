@@ -96,6 +96,26 @@ const DiscordPresence = () => {
     }
   };
 
+  const getImageUrl = (activity: any) => {
+    if (listening_to_spotify && spotify && activity.type === 2) {
+      return spotify.album_art_url;
+    }
+    
+    if (activity.assets?.large_image) {
+      if (activity.assets.large_image.startsWith('spotify:')) {
+        return '';
+      }
+      
+      if (activity.assets.large_image.startsWith('mp:')) {
+        return `https://media.discordapp.net/external/${activity.assets.large_image.replace('mp:', '')}`;
+      }
+      
+      return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.large_image}.png`;
+    }
+    
+    return '';
+  };
+
   if (isLoading) {
     return (
       <div className="mt-6 p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm animate-pulse max-w-[320px] w-full">
@@ -176,24 +196,14 @@ const DiscordPresence = () => {
       {currentActivity && currentActivity.type !== 4 && (
         <div className="mt-2 border-t border-[#00ff00]/20 pt-2">
           <div className="flex items-center">
-            {currentActivity.assets?.large_image && (
-              <img
-                src={
-                  currentActivity.assets.large_image.startsWith('spotify:')
-                    ? listening_to_spotify && spotify 
-                      ? spotify.album_art_url 
-                      : ''
-                    : currentActivity.assets.large_image.startsWith('mp:') 
-                      ? `https://media.discordapp.net/external/${currentActivity.assets.large_image.replace('mp:', '')}`
-                      : `https://cdn.discordapp.com/app-assets/${currentActivity.type === 0 ? discord_user.id : 'spotify'}/${currentActivity.assets.large_image}.png`
-                }
-                alt={currentActivity.assets.large_text || currentActivity.name}
-                className="h-12 w-12 rounded-md border border-[#00ff00]/30 mr-3"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-            )}
+            <img
+              src={getImageUrl(currentActivity)}
+              alt={currentActivity.name}
+              className="h-12 w-12 rounded-md border border-[#00ff00]/30 mr-3"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
+            />
             
             <div className="flex items-center">
               {currentActivity.type === 2 ? (
