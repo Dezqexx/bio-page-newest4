@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import TiltCard from '@/components/TiltCard';
-import { Activity, MessageCircle, Sparkles } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
@@ -205,20 +205,16 @@ const DiscordPresence = () => {
               }}
             />
             
-            <div className="flex items-center">
-              <Sparkles className="w-5 h-5 text-[#00ff00] mr-2" />
-              
-              <div className="text-left">
-                <div className="text-[#00ff00]/90 text-sm">
-                  {activityTypes[currentActivity.type]} {currentActivity.name}
-                </div>
-                
-                {currentActivity.details && (
-                  <div className="text-[#00ff00]/70 text-xs truncate max-w-[200px]">
-                    {currentActivity.details}
-                  </div>
-                )}
+            <div className="text-left">
+              <div className="text-[#00ff00]/90 text-sm">
+                {activityTypes[currentActivity.type]} {currentActivity.name}
               </div>
+              
+              {currentActivity.details && (
+                <div className="text-[#00ff00]/70 text-xs truncate max-w-[200px]">
+                  {currentActivity.details}
+                </div>
+              )}
             </div>
           </div>
         </div>
