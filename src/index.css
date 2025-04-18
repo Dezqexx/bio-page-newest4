@@ -131,10 +131,10 @@
   .lightning-segment {
     position: absolute;
     width: 3px;
-    background: #9b87f5; 
+    background: #9b87f5;
     box-shadow: 
       0 0 5px #9b87f5,
-      0 0 10px #8B5CF6, 
+      0 0 10px #8B5CF6,
       0 0 20px rgba(155, 135, 245, 0.5);
     opacity: 0.95;
   }
@@ -142,10 +142,10 @@
   .lightning-branch {
     position: absolute;
     width: 2px;
-    background: #8B5CF6; 
+    background: #8B5CF6;
     box-shadow: 
       0 0 4px #9b87f5,
-      0 0 8px #8B5CF6, 
+      0 0 8px #8B5CF6,
       0 0 12px rgba(155, 135, 245, 0.4);
     opacity: 0.8;
     pointer-events: none;
