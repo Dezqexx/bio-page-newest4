@@ -21,9 +21,9 @@ const RainEffect = () => {
 
     const createLightning = () => {
       const colorTypes = [
-        {main: '#9b87f5', glow: '#8B5CF6'},
-        {main: '#A78BFA', glow: '#9b87f5'},
-        {main: '#8B5CF6', glow: '#7C3AED'}
+        {main: '#00ff00', glow: '#39FF14'},
+        {main: '#0FFF50', glow: '#00FF00'},
+        {main: '#7CFC00', glow: '#39FF14'}
       ];
       const colorType = colorTypes[Math.floor(Math.random() * colorTypes.length)];
       

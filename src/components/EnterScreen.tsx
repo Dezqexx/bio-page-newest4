@@ -11,10 +11,10 @@ const EnterScreen = ({ onEnter }: EnterScreenProps) => {
       className="relative z-10 flex flex-col items-center justify-center text-center p-4 cursor-default"
       onClick={onEnter}
     >
-      <h1 className="text-5xl font-bold mb-2 text-[#9b87f5] glow">Welcome</h1>
-      <div className="text-xl text-[#9b87f5]/80 cursor-default">Click to enter</div>
-      <div className="w-12 h-12 border-2 border-[#9b87f5]/50 rounded-full flex items-center justify-center animate-pulse mt-4">
-        <div className="w-8 h-8 border-t-2 border-[#9b87f5] rounded-full animate-spin"></div>
+      <h1 className="text-5xl font-bold mb-2 text-[#00ff00] glow">Welcome</h1>
+      <div className="text-xl text-[#00ff00]/80 cursor-default">Click to enter</div>
+      <div className="w-12 h-12 border-2 border-[#00ff00]/50 rounded-full flex items-center justify-center animate-pulse mt-4">
+        <div className="w-8 h-8 border-t-2 border-[#00ff00] rounded-full animate-spin"></div>
       </div>
     </div>
   );

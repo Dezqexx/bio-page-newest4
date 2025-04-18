@@ -122,9 +122,9 @@ const DiscordPresence = () => {
 
   if (isLoading) {
     return (
-      <div className="mt-6 p-4 border-2 border-[#9b87f5]/50 rounded-lg bg-black/30 backdrop-blur-sm animate-pulse max-w-[320px] w-full">
+      <div className="mt-6 p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm animate-pulse max-w-[320px] w-full">
         <div className="flex items-center justify-center">
-          <div className="h-8 w-36 bg-[#9b87f5]/10 rounded"></div>
+          <div className="h-8 w-36 bg-[#00ff00]/10 rounded"></div>
         </div>
       </div>
     );
@@ -132,10 +132,10 @@ const DiscordPresence = () => {
 
   if (error || !lanyardData) {
     return (
-      <div className="mt-6 p-4 border-2 border-[#9b87f5]/20 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
+      <div className="mt-6 p-4 border-2 border-[#00ff00]/20 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
         <div className="flex items-center justify-center">
-          <MessageCircle className="w-5 h-5 text-[#9b87f5]/50 mr-2" />
-          <span className="text-[#9b87f5]/50">Discord presence unavailable</span>
+          <MessageCircle className="w-5 h-5 text-[#00ff00]/50 mr-2" />
+          <span className="text-[#00ff00]/50">Discord presence unavailable</span>
         </div>
       </div>
     );
@@ -163,19 +163,19 @@ const DiscordPresence = () => {
   }
 
   return (
-    <TiltCard className="mt-6 text-center p-4 border-2 border-[#9b87f5]/50 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
+    <TiltCard className="mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
       <div className="flex items-start pl-2 mb-3 relative">
         <div className="relative mr-3">
           <img
             src={avatarUrl}
             alt={displayName}
-            className="w-12 h-12 rounded-full border border-[#9b87f5]/30"
+            className="w-12 h-12 rounded-full border border-[#00ff00]/30"
           />
           <div className={`absolute bottom-0 right-0 w-3 h-3 ${getStatusColor(discord_status)} rounded-full border border-black`}></div>
         </div>
         <div className="text-left flex flex-col flex-grow">
           <div className="flex items-center">
-            <div className="text-[#9b87f5] font-medium">{displayName}</div>
+            <div className="text-[#00ff00] font-medium">{displayName}</div>
             <div className="ml-1">
               <img src="https://I-love.thicc-thighs.com/aj2vumbr.svg" alt="Discord Nitro" className="w-5 h-5" />
             </div>
@@ -185,7 +185,7 @@ const DiscordPresence = () => {
           </div>
           
           {customStatusActivity?.emoji && (
-            <div className="text-[#9b87f5]/70 text-xs flex items-center mt-1">
+            <div className="text-[#00ff00]/70 text-xs flex items-center mt-1">
               <img 
                 src={`https://cdn.discordapp.com/emojis/${customStatusActivity.emoji.id}.${customStatusActivity.emoji.animated ? 'gif' : 'png'}`} 
                 alt={customStatusActivity.emoji.name} 
@@ -200,7 +200,7 @@ const DiscordPresence = () => {
           <HoverCardTrigger asChild>
             <button 
               onClick={openDiscordProfile}
-              className="absolute top-0 right-0 text-[#9b87f5] hover:text-[#8B5CF6] transition-colors duration-300 group"
+              className="absolute top-0 right-0 text-[#00ff00] hover:text-[#39FF14] transition-colors duration-300 group"
             >
               <ArrowRight 
                 className="w-6 h-6 group-hover:scale-110 transition-transform" 
@@ -211,7 +211,7 @@ const DiscordPresence = () => {
           <HoverCardContent 
             side="left" 
             align="start" 
-            className="w-32 p-2 bg-black/70 backdrop-blur-md border-[#9b87f5]/30 text-[#9b87f5] text-xs"
+            className="w-32 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00] text-xs"
           >
             Open Discord Profile
           </HoverCardContent>
@@ -219,24 +219,24 @@ const DiscordPresence = () => {
       </div>
       
       {currentActivity && currentActivity.type !== 4 && (
-        <div className="mt-2 border-t border-[#9b87f5]/20 pt-2">
+        <div className="mt-2 border-t border-[#00ff00]/20 pt-2">
           <div className="flex items-center">
             <img
               src={getImageUrl(currentActivity)}
               alt={currentActivity.name}
-              className="h-12 w-12 rounded-md border border-[#9b87f5]/30 mr-3"
+              className="h-12 w-12 rounded-md border border-[#00ff00]/30 mr-3"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = 'none';
               }}
             />
             
             <div className="text-left">
-              <div className="text-[#9b87f5]/90 text-sm">
+              <div className="text-[#00ff00]/90 text-sm">
                 {activityTypes[currentActivity.type]} {currentActivity.name}
               </div>
               
               {currentActivity.details && (
-                <div className="text-[#9b87f5]/70 text-xs truncate max-w-[200px]">
+                <div className="text-[#00ff00]/70 text-xs truncate max-w-[200px]">
                   {currentActivity.details}
                 </div>
               )}
