@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import TiltCard from '@/components/TiltCard';
-import { Activity, MessageCircle, Gamepad, Music, Sparkles } from 'lucide-react';
+import { Activity, MessageCircle, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
@@ -206,15 +206,7 @@ const DiscordPresence = () => {
             />
             
             <div className="flex items-center">
-              {currentActivity.type === 2 ? (
-                <Music className="w-5 h-5 text-[#00ff00] mr-2" />
-              ) : currentActivity.type === 0 ? (
-                <Gamepad className="w-5 h-5 text-[#00ff00] mr-2" />
-              ) : currentActivity.type === 3 ? (
-                <Activity className="w-5 h-5 text-[#00ff00] mr-2" />
-              ) : (
-                <Sparkles className="w-5 h-5 text-[#00ff00] mr-2" />
-              )}
+              <Sparkles className="w-5 h-5 text-[#00ff00] mr-2" />
               
               <div className="text-left">
                 <div className="text-[#00ff00]/90 text-sm">
