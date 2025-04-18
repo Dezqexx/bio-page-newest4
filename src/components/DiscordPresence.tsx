@@ -196,8 +196,8 @@ const DiscordPresence = () => {
           )}
         </div>
         
-        <HoverCard>
-          <HoverCardTrigger>
+        <HoverCard openDelay={200} closeDelay={200}>
+          <HoverCardTrigger asChild>
             <button 
               onClick={openDiscordProfile}
               className="absolute top-0 right-0 text-[#00ff00] hover:text-[#39FF14] transition-colors duration-300 group"
@@ -208,7 +208,11 @@ const DiscordPresence = () => {
               />
             </button>
           </HoverCardTrigger>
-          <HoverCardContent className="w-32 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00]/80 text-xs">
+          <HoverCardContent 
+            side="left" 
+            align="start" 
+            className="w-32 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00] text-xs"
+          >
             Open Discord Profile
           </HoverCardContent>
         </HoverCard>
