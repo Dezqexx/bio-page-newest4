@@ -51,7 +51,7 @@ const DiscordActivity = ({ activity, elapsedTime, spotifyData }: DiscordActivity
             </div>
           )}
           
-          {isSpotify && (
+          {isSpotify && spotifyData?.data?.timestamps && (
             <div className="mt-2 w-full">
               <Progress 
                 value={spotifyData.progress} 
