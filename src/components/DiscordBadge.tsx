@@ -1,14 +1,6 @@
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 
-// Define more specific interface for each badge type
-interface BadgeConfig {
-  label: string;
-  svg: JSX.Element;
-  subscriberText?: string;
-  boostText?: string;
-}
-
 interface DiscordBadgeProps {
   type: 'nitro' | 'verified' | 'staff' | 'partner' | 'hypesquad' | 'boost';
   className?: string;
@@ -16,10 +8,9 @@ interface DiscordBadgeProps {
 
 const DiscordBadge = ({ type, className = "" }: DiscordBadgeProps) => {
   // Badge configurations
-  const badges: Record<DiscordBadgeProps['type'], BadgeConfig> = {
+  const badges = {
     nitro: {
       label: "Discord Nitro",
-      subscriberText: "Subscriber since 8/11/2022",
       svg: (
         <svg 
           viewBox="0 0 24 24" 
@@ -32,20 +23,6 @@ const DiscordBadge = ({ type, className = "" }: DiscordBadgeProps) => {
             d="M17.7 8.2c-1.3 2-3.2 3.8-5.7 3.8s-4.4-1.8-5.7-3.8l-1 4 2 4.5c1.2 1.2 3 2.3 4.7 2.3s3.5-1.1 4.7-2.3l2-4.5-1-4z"
             fill="white"
           />
-        </svg>
-      )
-    },
-    boost: {
-      label: "Server Booster",
-      boostText: "Server boosting since Aug 11, 2022",
-      svg: (
-        <svg 
-          viewBox="0 0 24 24" 
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg" 
-          className={`w-5 h-5 ${className}`}
-        >
-          <path fill="#F47FFF" d="M19.83 8l-8-5.5a2 2 0 0 0-2.29.12l-7.11 6a2 2 0 0 0-.59 2.25l2.3 5.13a2 2 0 0 0 1.8 1.17L12 17v4l3.38-3.38a2 2 0 0 0 .59-1.42V8.92a.92.92 0 0 1 1.38-.76l2.31 1.34a.5.5 0 0 0 .63-.59L19.83 8z"/>
         </svg>
       )
     },
@@ -100,6 +77,19 @@ const DiscordBadge = ({ type, className = "" }: DiscordBadgeProps) => {
           <path fill="#FBB848" d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm3.97 12.41l-4.03-2.42L8 14.41l1.26-4.39 2.74-2.08 2.74 2.08 1.23 4.39z"/>
         </svg>
       )
+    },
+    boost: {
+      label: "Server Booster",
+      svg: (
+        <svg 
+          viewBox="0 0 24 24" 
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg" 
+          className={`w-5 h-5 ${className}`}
+        >
+          <path fill="#F47FFF" d="M19.83 8l-8-5.5a2 2 0 0 0-2.29.12l-7.11 6a2 2 0 0 0-.59 2.25l2.3 5.13a2 2 0 0 0 1.8 1.17L12 17v4l3.38-3.38a2 2 0 0 0 .59-1.42V8.92a.92.92 0 0 1 1.38-.76l2.31 1.34a.5.5 0 0 0 .63-.59L19.83 8z"/>
+        </svg>
+      )
     }
   };
 
@@ -112,14 +102,8 @@ const DiscordBadge = ({ type, className = "" }: DiscordBadgeProps) => {
           {badge.svg}
         </div>
       </HoverCardTrigger>
-      <HoverCardContent 
-        side="top" 
-        align="center" 
-        className="w-48 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00] text-xs"
-      >
+      <HoverCardContent className="w-32 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00]/80 text-xs">
         {badge.label}
-        {badge.subscriberText && <div className="text-[#00ff00]/70 mt-1">{badge.subscriberText}</div>}
-        {badge.boostText && <div className="text-[#00ff00]/70 mt-1">{badge.boostText}</div>}
       </HoverCardContent>
     </HoverCard>
   );
