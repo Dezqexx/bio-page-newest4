@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import TiltCard from '@/components/TiltCard';
 import { MessageCircle, ArrowRight } from 'lucide-react';
@@ -111,6 +112,11 @@ const DiscordPresence = () => {
       }
       
       return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.large_image}.png`;
+    }
+    
+    // Add fallback for when there's no large_image but there is an application_id
+    if (activity.application_id) {
+      return `https://dcdn.dstn.to/app-icons/${activity.application_id}`;
     }
     
     return '';
