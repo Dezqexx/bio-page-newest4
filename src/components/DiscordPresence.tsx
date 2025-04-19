@@ -1,159 +1,14 @@
-import { useEffect, useState } from 'react';
+
+import { MessageCircle } from 'lucide-react';
 import TiltCard from '@/components/TiltCard';
-import { MessageCircle, ArrowRight, Clock } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { Progress } from '@/components/ui/progress';
-import DiscordBadge from '@/components/DiscordBadge';
+import { useDiscordPresence } from '@/hooks/useDiscordPresence';
+import DiscordUser from '@/components/discord/DiscordUser';
+import DiscordActivity from '@/components/discord/DiscordActivity';
 
-interface LanyardData {
-  data: {
-    discord_user: {
-      id: string;
-      username: string;
-      avatar: string;
-      discriminator: string;
-      global_name: string | null;
-    };
-    discord_status: "online" | "idle" | "dnd" | "offline";
-    activities: Array<{
-      name: string;
-      type: number;
-      state?: string;
-      details?: string;
-      emoji?: {
-        id: string;
-        name: string;
-        animated: boolean;
-      };
-      assets?: {
-        large_image?: string;
-        large_text?: string;
-        small_image?: string;
-        small_text?: string;
-      };
-      timestamps?: {
-        start?: number;
-        end?: number;
-      };
-    }>;
-    listening_to_spotify: boolean;
-    spotify?: {
-      track_id: string;
-      timestamps: {
-        start: number;
-        end: number;
-      };
-      song: string;
-      artist: string;
-      album_art_url: string;
-      album: string;
-    };
-  };
-}
-
-const activityTypes = ["Playing", "Streaming", "Listening to", "Watching", "Custom", "Competing in"];
+const DISCORD_USER_ID = '790718755931815947';
 
 const DiscordPresence = () => {
-  const [lanyardData, setLanyardData] = useState<LanyardData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [elapsedTime, setElapsedTime] = useState<string>('');
-  const [spotifyProgress, setSpotifyProgress] = useState<number>(0);
-
-  useEffect(() => {
-    const fetchDiscordPresence = async () => {
-      try {
-        const response = await fetch('https://api.lanyard.rest/v1/users/790718755931815947');
-        if (!response.ok) {
-          throw new Error('Failed to fetch Discord presence');
-        }
-        const data: LanyardData = await response.json();
-        setLanyardData(data);
-      } catch (err) {
-        setError('Failed to load Discord presence');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchDiscordPresence();
-
-    const intervalId = setInterval(fetchDiscordPresence, 30000);
-    
-    return () => clearInterval(intervalId);
-  }, []);
-
-  useEffect(() => {
-    const updateTimes = () => {
-      if (lanyardData?.data) {
-        const { activities, spotify, listening_to_spotify } = lanyardData.data;
-        
-        const gameActivity = activities.find(act => act.type === 0);
-        if (gameActivity?.timestamps?.start) {
-          const startTime = gameActivity.timestamps.start;
-          const elapsed = Date.now() - startTime;
-          const hours = Math.floor(elapsed / 3600000);
-          const minutes = Math.floor((elapsed % 3600000) / 60000);
-          setElapsedTime(hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`);
-        }
-
-        if (listening_to_spotify && spotify) {
-          const { timestamps } = spotify;
-          const total = timestamps.end - timestamps.start;
-          const current = Date.now() - timestamps.start;
-          const progress = Math.min((current / total) * 100, 100);
-          setSpotifyProgress(progress);
-        }
-      }
-    };
-
-    const timer = setInterval(updateTimes, 1000);
-    return () => clearInterval(timer);
-  }, [lanyardData]);
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'online':
-        return 'bg-green-500';
-      case 'idle':
-        return 'bg-yellow-500';
-      case 'dnd':
-        return 'bg-red-500';
-      default:
-        return 'bg-gray-500';
-    }
-  };
-
-  const getImageUrl = (activity: any) => {
-    if (listening_to_spotify && spotify && activity.type === 2) {
-      return spotify.album_art_url;
-    }
-    
-    if (activity.assets?.large_image) {
-      if (activity.assets.large_image.startsWith('spotify:')) {
-        return '';
-      }
-      
-      if (activity.assets.large_image.startsWith('mp:')) {
-        return `https://media.discordapp.net/external/${activity.assets.large_image.replace('mp:', '')}`;
-      }
-      
-      return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.large_image}.png`;
-    }
-    
-    if (activity.application_id) {
-      return `https://dcdn.dstn.to/app-icons/${activity.application_id}`;
-    }
-    
-    return '';
-  };
-
-  const openDiscordProfile = () => {
-    window.open(`https://discord.com/users/790718755931815947`, '_blank', 'noopener,noreferrer');
-  };
+  const { lanyardData, isLoading, error, elapsedTime, spotifyProgress } = useDiscordPresence(DISCORD_USER_ID);
 
   if (isLoading) {
     return (
@@ -178,10 +33,6 @@ const DiscordPresence = () => {
 
   const { discord_user, discord_status, activities, spotify, listening_to_spotify } = lanyardData.data;
   
-  const avatarUrl = "https://cdn.discordapp.com/avatars/790718755931815947/a_86e001b599ecf28ab775d89b9a3e1dce.gif?size=4096";
-  
-  const displayName = discord_user.global_name || discord_user.username;
-
   const customStatusActivity = activities.find(act => act.type === 4);
   const otherActivities = activities.filter(act => act.type !== 4);
   
@@ -199,102 +50,22 @@ const DiscordPresence = () => {
 
   return (
     <TiltCard className="mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
-      <div className="flex items-start pl-2 mb-3 relative">
-        <div className="relative mr-3">
-          <img
-            src={avatarUrl}
-            alt={displayName}
-            className="w-12 h-12 rounded-full border border-[#00ff00]/30"
-          />
-          <div className={`absolute bottom-0 right-0 w-3 h-3 ${getStatusColor(discord_status)} rounded-full border border-black`}></div>
-        </div>
-        <div className="text-left flex flex-col flex-grow">
-          <div className="flex items-center">
-            <div className="text-[#00ff00] font-medium">{displayName}</div>
-            <div className="ml-1">
-              <img src="https://I-love.thicc-thighs.com/aj2vumbr.svg" alt="Discord Nitro" className="w-5 h-5" />
-            </div>
-            <div className="ml-1">
-              <img src="https://your-mom-is-so-fat-we-couldnt-fit-her-in-this-doma.in/p8l5ur18.svg" alt="Server Boosting" className="w-5 h-5" />
-            </div>
-          </div>
-          
-          {customStatusActivity?.emoji && (
-            <div className="text-[#00ff00]/70 text-xs flex items-center mt-1">
-              <img 
-                src={`https://cdn.discordapp.com/emojis/${customStatusActivity.emoji.id}.${customStatusActivity.emoji.animated ? 'gif' : 'png'}`} 
-                alt={customStatusActivity.emoji.name} 
-                className="w-5 h-5 mr-1"
-              />
-              {customStatusActivity.state && <span>{customStatusActivity.state}</span>}
-            </div>
-          )}
-        </div>
-        
-        <HoverCard openDelay={200} closeDelay={200}>
-          <HoverCardTrigger asChild>
-            <button 
-              onClick={openDiscordProfile}
-              className="absolute top-0 right-0 text-[#00ff00] hover:text-[#39FF14] transition-colors duration-300 group"
-            >
-              <ArrowRight 
-                className="w-6 h-6 group-hover:scale-110 transition-transform" 
-                strokeWidth={3}
-              />
-            </button>
-          </HoverCardTrigger>
-          <HoverCardContent 
-            side="left" 
-            align="start" 
-            className="w-32 p-2 bg-black/70 backdrop-blur-md border-[#00ff00]/30 text-[#00ff00] text-xs"
-          >
-            Open Discord Profile
-          </HoverCardContent>
-        </HoverCard>
-      </div>
+      <DiscordUser 
+        user={discord_user} 
+        status={discord_status} 
+        customStatus={customStatusActivity}
+      />
       
       {currentActivity && currentActivity.type !== 4 && (
-        <div className="mt-2 border-t border-[#00ff00]/20 pt-2">
-          <div className="flex items-center">
-            <img
-              src={getImageUrl(currentActivity)}
-              alt={currentActivity.name}
-              className="h-12 w-12 rounded-md border border-[#00ff00]/30 mr-3"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
-              }}
-            />
-            
-            <div className="text-left flex-grow">
-              <div className="text-[#00ff00]/90 text-sm">
-                {activityTypes[currentActivity.type]} {currentActivity.name}
-              </div>
-              
-              {currentActivity.details && (
-                <div className="text-[#00ff00]/70 text-xs truncate max-w-[200px]">
-                  {currentActivity.details}
-                </div>
-              )}
-              
-              {currentActivity.type === 0 && elapsedTime && (
-                <div className="text-[#00ff00]/60 text-xs mt-1 flex items-center">
-                  <Clock className="w-3 h-3 mr-1" />
-                  {elapsedTime} elapsed
-                </div>
-              )}
-              
-              {listening_to_spotify && spotify && currentActivity.type === 2 && (
-                <div className="mt-2 w-full">
-                  <Progress 
-                    value={spotifyProgress} 
-                    className="h-1 bg-[#00ff00]/20" 
-                    indicatorClassName="bg-[#00ff00]"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        <DiscordActivity 
+          activity={currentActivity} 
+          elapsedTime={currentActivity.type === 0 ? elapsedTime : undefined}
+          spotifyData={
+            listening_to_spotify && spotify && currentActivity.type === 2 
+              ? { listening: true, progress: spotifyProgress, data: spotify } 
+              : undefined
+          }
+        />
       )}
     </TiltCard>
   );
