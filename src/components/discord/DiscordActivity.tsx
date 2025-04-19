@@ -1,7 +1,7 @@
 
 import { Clock } from 'lucide-react';
 import { DiscordActivity as DiscordActivityType, ACTIVITY_TYPES } from '@/types/discord';
-import { getImageUrl } from '@/utils/discordUtils';
+import { getImageUrl, formatTime } from '@/utils/discordUtils';
 import { Progress } from '@/components/ui/progress';
 
 interface DiscordActivityProps {
@@ -58,6 +58,10 @@ const DiscordActivity = ({ activity, elapsedTime, spotifyData }: DiscordActivity
                 className="h-1 bg-[#00ff00]/20" 
                 indicatorClassName="bg-[#00ff00]"
               />
+              <div className="flex justify-between text-[#00ff00]/60 text-[10px] mt-1">
+                <span>{formatTime(Date.now() - spotifyData.data.timestamps.start)}</span>
+                <span>{formatTime(spotifyData.data.timestamps.end - spotifyData.data.timestamps.start)}</span>
+              </div>
             </div>
           )}
         </div>
