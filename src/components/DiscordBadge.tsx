@@ -1,4 +1,13 @@
+
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+
+// Define more specific interface for each badge type
+interface BadgeConfig {
+  label: string;
+  svg: JSX.Element;
+  subscriberText?: string;
+  boostText?: string;
+}
 
 interface DiscordBadgeProps {
   type: 'nitro' | 'verified' | 'staff' | 'partner' | 'hypesquad' | 'boost';
@@ -7,7 +16,7 @@ interface DiscordBadgeProps {
 
 const DiscordBadge = ({ type, className = "" }: DiscordBadgeProps) => {
   // Badge configurations
-  const badges = {
+  const badges: Record<DiscordBadgeProps['type'], BadgeConfig> = {
     nitro: {
       label: "Discord Nitro",
       subscriberText: "Subscriber since 8/11/2022",
