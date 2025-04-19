@@ -1,10 +1,10 @@
-
 import { useEffect, useState } from 'react';
 import TiltCard from '@/components/TiltCard';
-import { MessageCircle, ArrowRight } from 'lucide-react';
+import { MessageCircle, ArrowRight, Clock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Progress } from '@/components/ui/progress';
 import DiscordBadge from '@/components/DiscordBadge';
 
 interface LanyardData {
@@ -59,6 +59,8 @@ const DiscordPresence = () => {
   const [lanyardData, setLanyardData] = useState<LanyardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [elapsedTime, setElapsedTime] = useState<string>('');
+  const [spotifyProgress, setSpotifyProgress] = useState<number>(0);
 
   useEffect(() => {
     const fetchDiscordPresence = async () => {
@@ -83,6 +85,34 @@ const DiscordPresence = () => {
     
     return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    const updateTimes = () => {
+      if (lanyardData?.data) {
+        const { activities, spotify, listening_to_spotify } = lanyardData.data;
+        
+        const gameActivity = activities.find(act => act.type === 0);
+        if (gameActivity?.timestamps?.start) {
+          const startTime = gameActivity.timestamps.start;
+          const elapsed = Date.now() - startTime;
+          const hours = Math.floor(elapsed / 3600000);
+          const minutes = Math.floor((elapsed % 3600000) / 60000);
+          setElapsedTime(hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`);
+        }
+
+        if (listening_to_spotify && spotify) {
+          const { timestamps } = spotify;
+          const total = timestamps.end - timestamps.start;
+          const current = Date.now() - timestamps.start;
+          const progress = Math.min((current / total) * 100, 100);
+          setSpotifyProgress(progress);
+        }
+      }
+    };
+
+    const timer = setInterval(updateTimes, 1000);
+    return () => clearInterval(timer);
+  }, [lanyardData]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -114,7 +144,6 @@ const DiscordPresence = () => {
       return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.large_image}.png`;
     }
     
-    // Add fallback for when there's no large_image but there is an application_id
     if (activity.application_id) {
       return `https://dcdn.dstn.to/app-icons/${activity.application_id}`;
     }
@@ -236,7 +265,7 @@ const DiscordPresence = () => {
               }}
             />
             
-            <div className="text-left">
+            <div className="text-left flex-grow">
               <div className="text-[#00ff00]/90 text-sm">
                 {activityTypes[currentActivity.type]} {currentActivity.name}
               </div>
@@ -244,6 +273,23 @@ const DiscordPresence = () => {
               {currentActivity.details && (
                 <div className="text-[#00ff00]/70 text-xs truncate max-w-[200px]">
                   {currentActivity.details}
+                </div>
+              )}
+              
+              {currentActivity.type === 0 && elapsedTime && (
+                <div className="text-[#00ff00]/60 text-xs mt-1 flex items-center">
+                  <Clock className="w-3 h-3 mr-1" />
+                  {elapsedTime} elapsed
+                </div>
+              )}
+              
+              {listening_to_spotify && spotify && currentActivity.type === 2 && (
+                <div className="mt-2 w-full">
+                  <Progress 
+                    value={spotifyProgress} 
+                    className="h-1 bg-[#00ff00]/20" 
+                    indicatorClassName="bg-[#00ff00]"
+                  />
                 </div>
               )}
             </div>
