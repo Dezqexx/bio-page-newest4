@@ -19,7 +19,7 @@ const DiscordActivity = ({ activity, elapsedTime, spotifyData }: DiscordActivity
   
   return (
     <div className="mt-2 border-t border-[#00ff00]/20 pt-2">
-      <div className="flex items-center">
+      <div className="flex items-center space-x-3">
         <img
           src={getImageUrl(
             activity, 
@@ -27,7 +27,7 @@ const DiscordActivity = ({ activity, elapsedTime, spotifyData }: DiscordActivity
             spotifyData?.data
           )}
           alt={activity.name}
-          className="h-12 w-12 rounded-md border border-[#00ff00]/30 mr-3"
+          className="h-12 w-12 rounded-md border border-[#00ff00]/30"
           onError={(e) => {
             (e.target as HTMLImageElement).style.display = 'none';
           }}
@@ -50,24 +50,25 @@ const DiscordActivity = ({ activity, elapsedTime, spotifyData }: DiscordActivity
               {elapsedTime} elapsed
             </div>
           )}
-          
-          {isSpotify && spotifyData?.data?.timestamps && (
-            <div className="mt-2 w-full">
-              <Progress 
-                value={spotifyData.progress} 
-                className="h-1 bg-[#00ff00]/20" 
-                indicatorClassName="bg-[#00ff00]"
-              />
-              <div className="flex justify-between text-[#00ff00]/60 text-[10px] mt-1">
-                <span>{formatTime(Date.now() - spotifyData.data.timestamps.start)}</span>
-                <span>{formatTime(spotifyData.data.timestamps.end - spotifyData.data.timestamps.start)}</span>
-              </div>
-            </div>
-          )}
         </div>
       </div>
+      
+      {isSpotify && spotifyData?.data?.timestamps && (
+        <div className="mt-2 w-full">
+          <Progress 
+            value={spotifyData.progress} 
+            className="h-1 bg-[#00ff00]/20" 
+            indicatorClassName="bg-[#00ff00]"
+          />
+          <div className="flex justify-between text-[#00ff00]/60 text-[10px] mt-1">
+            <span>{formatTime(Date.now() - spotifyData.data.timestamps.start)}</span>
+            <span>{formatTime(spotifyData.data.timestamps.end - spotifyData.data.timestamps.start)}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default DiscordActivity;
+
