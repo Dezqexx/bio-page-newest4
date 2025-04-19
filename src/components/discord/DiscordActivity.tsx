@@ -17,6 +17,13 @@ interface DiscordActivityProps {
 const DiscordActivity = ({ activity, elapsedTime, spotifyData }: DiscordActivityProps) => {
   const isSpotify = spotifyData?.listening && activity.type === 2;
   
+  const getSpotifyUrl = () => {
+    if (isSpotify && spotifyData?.data?.track_id) {
+      return `https://open.spotify.com/track/${spotifyData.data.track_id}`;
+    }
+    return null;
+  };
+  
   return (
     <div className="mt-2 border-t border-[#00ff00]/20 pt-2">
       <div className="flex items-center space-x-3">
@@ -35,7 +42,18 @@ const DiscordActivity = ({ activity, elapsedTime, spotifyData }: DiscordActivity
         
         <div className="text-left flex-grow">
           <div className="text-[#00ff00]/90 text-sm">
-            {ACTIVITY_TYPES[activity.type]} {activity.name}
+            {isSpotify ? (
+              <a
+                href={getSpotifyUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline cursor-pointer"
+              >
+                {ACTIVITY_TYPES[activity.type]} {activity.name}
+              </a>
+            ) : (
+              <>{ACTIVITY_TYPES[activity.type]} {activity.name}</>
+            )}
           </div>
           
           {activity.details && (
