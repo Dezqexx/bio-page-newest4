@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import TiltCard from '@/components/TiltCard';
 import { MessageCircle, ArrowRight } from 'lucide-react';
@@ -17,10 +18,12 @@ interface LanyardData {
     };
     discord_status: "online" | "idle" | "dnd" | "offline";
     activities: Array<{
+      id: string;
       name: string;
       type: number;
       state?: string;
       details?: string;
+      application_id?: string;
       emoji?: {
         id: string;
         name: string;
@@ -68,6 +71,7 @@ const DiscordPresence = () => {
         }
         const data: LanyardData = await response.json();
         setLanyardData(data);
+        console.log("Lanyard Data:", data); // Log data for debugging
       } catch (err) {
         setError('Failed to load Discord presence');
         console.error(err);
@@ -97,20 +101,42 @@ const DiscordPresence = () => {
   };
 
   const getImageUrl = (activity: any) => {
-    if (listening_to_spotify && spotify && activity.type === 2) {
-      return spotify.album_art_url;
+    if (!activity) return '';
+
+    // For Spotify
+    if (lanyardData?.data.listening_to_spotify && lanyardData?.data.spotify && activity.type === 2) {
+      return lanyardData.data.spotify.album_art_url;
     }
     
+    // For games with assets
     if (activity.assets?.large_image) {
+      // If it's a Spotify image but we're not handling it as Spotify
       if (activity.assets.large_image.startsWith('spotify:')) {
         return '';
       }
       
+      // For Discord's media proxy
       if (activity.assets.large_image.startsWith('mp:')) {
-        return `https://media.discordapp.net/external/${activity.assets.large_image.replace('mp:', '')}`;
+        return `https://media.discordapp.net/${activity.assets.large_image.replace('mp:', '')}`;
+      }
+
+      // For external assets
+      if (activity.assets.large_image.startsWith('external/')) {
+        return `https://media.discordapp.net/external/${activity.assets.large_image.replace('external/', '')}`;
       }
       
+      // For raw URLs (including https)
+      if (activity.assets.large_image.startsWith('http')) {
+        return activity.assets.large_image;
+      }
+      
+      // Default Discord CDN path for application assets
       return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.large_image}.png`;
+    }
+
+    // Use default image for specific games
+    if (activity.name === "ELDEN RING") {
+      return "https://cdn.discordapp.com/app-assets/946609449680908348/d20beeae614582ee841c00a52f8fbb7e.png";
     }
     
     return '';
@@ -176,12 +202,8 @@ const DiscordPresence = () => {
         <div className="text-left flex flex-col flex-grow">
           <div className="flex items-center">
             <div className="text-[#00ff00] font-medium">{displayName}</div>
-            <div className="ml-1">
-              <img src="https://I-love.thicc-thighs.com/aj2vumbr.svg" alt="Discord Nitro" className="w-5 h-5" />
-            </div>
-            <div className="ml-1">
-              <img src="https://your-mom-is-so-fat-we-couldnt-fit-her-in-this-doma.in/p8l5ur18.svg" alt="Server Boosting" className="w-5 h-5" />
-            </div>
+            <DiscordBadge type="nitro" />
+            <DiscordBadge type="boost" />
           </div>
           
           {customStatusActivity?.emoji && (
@@ -221,14 +243,17 @@ const DiscordPresence = () => {
       {currentActivity && currentActivity.type !== 4 && (
         <div className="mt-2 border-t border-[#00ff00]/20 pt-2">
           <div className="flex items-center">
-            <img
-              src={getImageUrl(currentActivity)}
-              alt={currentActivity.name}
-              className="h-12 w-12 rounded-md border border-[#00ff00]/30 mr-3"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
-              }}
-            />
+            <div className="h-12 w-12 rounded-md border border-[#00ff00]/30 mr-3 overflow-hidden">
+              <img
+                src={getImageUrl(currentActivity)}
+                alt={currentActivity.name}
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  console.error("Failed to load image:", e);
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </div>
             
             <div className="text-left">
               <div className="text-[#00ff00]/90 text-sm">
