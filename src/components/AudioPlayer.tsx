@@ -1,6 +1,5 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-import { Volume2, VolumeX, SkipForward } from 'lucide-react';
+import { Volume2, VolumeX } from 'lucide-react';
 import { Slider } from "@/components/ui/slider";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
@@ -94,10 +93,6 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
     }
   };
 
-  const skipToNextTrack = () => {
-    setCurrentTrackIndex(getRandomTrack());
-  };
-
   const handleVolumeChange = (value: number[]) => {
     setVolume(value[0]);
   };
@@ -106,58 +101,35 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
 
   return (
     <div className="fixed top-4 left-4 flex flex-col items-center gap-2">
-      <div className="flex gap-2">
-        {/* Mute/Unmute Button with Tooltip */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={handleMute}
-              className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
-              title={isMuted ? "Unmute" : "Mute"}
-              aria-label={isMuted ? "Unmute" : "Mute"}
-            >
-              {isMuted ? (
-                <VolumeX className="w-6 h-6 text-[#00ff00]" />
-              ) : (
-                <Volume2 className="w-6 h-6 text-[#00ff00]" />
-              )}
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="top" className="bg-black/80 border-[#00ff00]/60">
-            <span className="text-[#00ff00] font-semibold">
-              {isMuted ? "unmute" : "mute"}
-            </span>
-          </TooltipContent>
-        </Tooltip>
-
-        {/* Skip Song Button with Tooltip */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={skipToNextTrack}
-              className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
-              title="Skip Song"
-              aria-label="Skip Song"
-            >
-              <SkipForward className="w-6 h-6 text-[#00ff00]" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="top" className="bg-black/80 border-[#00ff00]/60">
-            <span className="text-[#00ff00] font-semibold">
-              skip song
-            </span>
-          </TooltipContent>
-        </Tooltip>
-      </div>
-      {/* Horizontal Volume Slider */}
-      <div className="w-28 mt-2 bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 rounded-full p-2 flex items-center justify-center">
+      {/* Mute Button with custom green tooltip */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            onClick={handleMute}
+            className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
+          >
+            {isMuted ? (
+              <VolumeX className="w-6 h-6 text-[#00ff00]" />
+            ) : (
+              <Volume2 className="w-6 h-6 text-[#00ff00]" />
+            )}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="top" className="bg-black/80 border-[#00ff00]/60">
+          <span className="text-[#00ff00] font-semibold">
+            {isMuted ? "unmute" : "mute"}
+          </span>
+        </TooltipContent>
+      </Tooltip>
+      {/* Vertical Volume Slider below the mute button */}
+      <div className="h-28 mt-2 bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 rounded-full p-2 flex flex-col items-center justify-center">
         <Slider
           defaultValue={[1]}
           value={[volume]}
           max={1}
           step={0.01}
-          orientation="horizontal"
-          className="w-24"
+          orientation="vertical"
+          className="h-24"
           onValueChange={handleVolumeChange}
         />
       </div>
