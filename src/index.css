@@ -211,6 +211,27 @@
       opacity: 0;
     }
   }
+
+  .neon-sign {
+    display: inline-block;
+  }
+
+  .neon-letter {
+    text-shadow: 
+      0 0 2px #00ff00,
+      0 0 4px #00ff00;
+    opacity: 0.85;
+    display: inline-block;
+  }
+
+  .neon-letter.flicker {
+    animation: letter-flicker 1s;
+  }
+
+  @keyframes letter-flicker {
+    0%, 100% { opacity: 0.85; }
+    45%, 55% { opacity: 0.3; }
+  }
 }
 
 body {
