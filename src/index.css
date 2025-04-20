@@ -222,15 +222,30 @@
       0 0 4px #00ff00;
     opacity: 0.85;
     display: inline-block;
+    transition: opacity 0.05s ease;
   }
 
   .neon-letter.flicker {
-    animation: letter-flicker 1s;
+    animation: letter-flicker 0.1s infinite alternate;
   }
 
   @keyframes letter-flicker {
-    0%, 100% { opacity: 0.85; }
-    45%, 55% { opacity: 0.3; }
+    0% { 
+      opacity: 0.85; 
+      text-shadow: 
+        0 0 2px #00ff00,
+        0 0 4px #00ff00;
+    }
+    50% { 
+      opacity: 0.3; 
+      text-shadow: 
+        0 0 1px #00ff00,
+        0 0 2px #00ff00;
+    }
+    100% { 
+      opacity: 0.05; 
+      text-shadow: none;
+    }
   }
 }
 

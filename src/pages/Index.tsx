@@ -21,8 +21,9 @@ const Index = () => {
     const flickerInterval = setInterval(() => {
       const randomIndex = Math.floor(Math.random() * 3); // "Dez" has 3 letters
       setFlickerIndex(randomIndex);
-      setTimeout(() => setFlickerIndex(null), 1000); // Reset after animation
-    }, 5000); // Trigger every 5 seconds
+      const flickerDuration = Math.random() * 500 + 100; // Randomize flicker duration between 100-600ms
+      setTimeout(() => setFlickerIndex(null), flickerDuration);
+    }, Math.random() * 2000 + 1000); // Randomize interval between 1-3 seconds
     
     return () => {
       document.body.classList.remove("cursor-custom");
