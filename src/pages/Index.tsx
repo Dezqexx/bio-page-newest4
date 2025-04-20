@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -45,7 +44,10 @@ const Index = () => {
               />
             </div>
             
-            <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow">
+            <h1 
+              className="text-4xl font-bold mb-2 text-[#00ff00] glow matrix-text"
+              data-text="Dez"
+            >
               Dez
             </h1>
             
@@ -74,4 +76,3 @@ const Index = () => {
 };
 
 export default Index;
-
