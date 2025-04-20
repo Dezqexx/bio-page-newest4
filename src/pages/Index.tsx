@@ -31,7 +31,7 @@ const Index = () => {
       <AudioPlayer 
         audioUrl="https://Im-a.femboylover.com/54fplvig.mp3" 
         autoplay={entered} 
-        isVisible={entered}
+        isVisible={entered} 
       />
       
       {entered ? (
