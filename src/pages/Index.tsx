@@ -51,13 +51,13 @@ const Index = () => {
             
             <div className="flex flex-col items-center justify-center gap-2 text-[#00ff00]/80 mb-6">
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                <span>Germany</span>
+                <Calendar className="w-4 h-4" />
+                <span>Age: 19</span>
               </div>
               
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span>Age: 19</span>
+                <MapPin className="w-4 h-4" />
+                <span>Germany</span>
               </div>
             </div>
 
@@ -74,3 +74,4 @@ const Index = () => {
 };
 
 export default Index;
+
