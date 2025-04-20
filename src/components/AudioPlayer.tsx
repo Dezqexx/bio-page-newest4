@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Volume2, VolumeX, SkipForward } from 'lucide-react';
 import { Slider } from "@/components/ui/slider";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 interface AudioPlayerProps {
   audioUrls: string[];
@@ -20,13 +20,10 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
   const getRandomTrack = () => {
     if (audioUrls.length === 0) return -1;
     if (audioUrls.length === 1) return 0;
-    
-    // If we have more than one track, try to avoid playing the same track twice
     let newIndex;
     do {
       newIndex = Math.floor(Math.random() * audioUrls.length);
     } while (newIndex === currentTrackIndex && audioUrls.length > 1);
-    
     return newIndex;
   };
 
@@ -40,16 +37,11 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
   // Play logic when track changes or autoplay triggers
   useEffect(() => {
     if (audioRef.current && currentTrackIndex !== -1) {
-      // Update audio source
       audioRef.current.src = audioUrls[currentTrackIndex];
       audioRef.current.load();
-      
-      // Play if autoplay is enabled and component is visible
       if (autoplay && isVisible) {
         audioRef.current.play()
-          .then(() => {
-            setIsPlaying(true);
-          })
+          .then(() => setIsPlaying(true))
           .catch(err => {
             console.error("Failed to autoplay audio:", err);
           });
@@ -62,12 +54,10 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
     const handleEnded = () => {
       setCurrentTrackIndex(getRandomTrack());
     };
-
     const audioElement = audioRef.current;
     if (audioElement) {
       audioElement.addEventListener('ended', handleEnded);
     }
-    
     return () => {
       if (audioElement) {
         audioElement.removeEventListener('ended', handleEnded);
@@ -75,12 +65,14 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
     };
   }, [currentTrackIndex, audioUrls]);
 
-  // Update volume when it changes
+  // Update volume dom
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
     }
   }, [volume]);
+
+  const isMuted = volume === 0;
 
   const togglePlay = () => {
     if (audioRef.current) {
@@ -90,6 +82,15 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
         audioRef.current.play();
       }
       setIsPlaying(!isPlaying);
+    }
+  };
+
+  // Mute/unmute functionality (clicking the button toggles between 0 and previous value)
+  const handleMute = () => {
+    if (isMuted) {
+      setVolume(1);
+    } else {
+      setVolume(0);
     }
   };
 
@@ -106,39 +107,60 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
   return (
     <div className="fixed top-4 left-4 flex flex-col items-center gap-2">
       <div className="flex gap-2">
-        <button
-          onClick={togglePlay}
-          className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
-          title={isPlaying ? "Pause" : "Play"}
-        >
-          {isPlaying ? (
-            <Volume2 className="w-6 h-6 text-[#00ff00]" />
-          ) : (
-            <VolumeX className="w-6 h-6 text-[#00ff00]" />
-          )}
-        </button>
-        
-        <button
-          onClick={skipToNextTrack}
-          className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
-          title="Next Track"
-        >
-          <SkipForward className="w-6 h-6 text-[#00ff00]" />
-        </button>
-      </div>
+        {/* Mute/Unmute Button with Tooltip */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={handleMute}
+              className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
+              title={isMuted ? "Unmute" : "Mute"}
+              aria-label={isMuted ? "Unmute" : "Mute"}
+            >
+              {isMuted ? (
+                <VolumeX className="w-6 h-6 text-[#00ff00]" />
+              ) : (
+                <Volume2 className="w-6 h-6 text-[#00ff00]" />
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="bg-black/80 border-[#00ff00]/60">
+            <span className="text-[#00ff00] font-semibold">
+              {isMuted ? "unmute" : "mute"}
+            </span>
+          </TooltipContent>
+        </Tooltip>
 
-      <div className="h-24 bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 rounded-full p-2">
+        {/* Skip Song Button with Tooltip */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={skipToNextTrack}
+              className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
+              title="Skip Song"
+              aria-label="Skip Song"
+            >
+              <SkipForward className="w-6 h-6 text-[#00ff00]" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="bg-black/80 border-[#00ff00]/60">
+            <span className="text-[#00ff00] font-semibold">
+              skip song
+            </span>
+          </TooltipContent>
+        </Tooltip>
+      </div>
+      {/* Horizontal Volume Slider */}
+      <div className="w-28 mt-2 bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 rounded-full p-2 flex items-center justify-center">
         <Slider
           defaultValue={[1]}
           value={[volume]}
           max={1}
           step={0.01}
-          orientation="vertical"
-          className="h-20"
+          orientation="horizontal"
+          className="w-24"
           onValueChange={handleVolumeChange}
         />
       </div>
-
       <audio ref={audioRef}></audio>
     </div>
   );
