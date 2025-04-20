@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { Slider } from "@/components/ui/slider";
@@ -100,7 +101,7 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
   if (!isVisible || audioUrls.length === 0) return null;
 
   return (
-    <div className="fixed top-4 left-4 flex flex-col items-center gap-2">
+    <div className="fixed top-4 left-4 flex flex-col items-center gap-1">
       {/* Mute Button with custom green tooltip */}
       <Tooltip>
         <TooltipTrigger asChild>
@@ -122,14 +123,14 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
         </TooltipContent>
       </Tooltip>
       {/* Vertical Volume Slider below the mute button */}
-      <div className="h-28 mt-2 bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 rounded-full p-2 flex flex-col items-center justify-center">
+      <div className="h-24 mt-1 bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 rounded-full p-2 flex flex-col items-center justify-center">
         <Slider
           defaultValue={[1]}
           value={[volume]}
           max={1}
           step={0.01}
           orientation="vertical"
-          className="h-24"
+          className="h-20 w-3"
           onValueChange={handleVolumeChange}
         />
       </div>
@@ -139,3 +140,4 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
 };
 
 export default AudioPlayer;
+
