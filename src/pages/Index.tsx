@@ -45,7 +45,7 @@ const Index = () => {
               />
             </div>
             
-            <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow">
+            <h1 className="text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#00ff00] via-[#39FF14] to-[#7CFC00] glow transition-all duration-300 hover:scale-105 hover:tracking-wider">
               Dez
             </h1>
             
