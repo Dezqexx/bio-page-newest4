@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -13,21 +14,13 @@ import "../assets/cursor.css";
 const Index = () => {
   useSparkleEffect();
   const [entered, setEntered] = useState(false);
-  const [flickerIndex, setFlickerIndex] = useState<number | null>(null);
   
   useEffect(() => {
+    // Apply cursor to entire document
     document.body.classList.add("cursor-custom");
-    
-    const flickerInterval = setInterval(() => {
-      const randomIndex = Math.floor(Math.random() * 3); // "Dez" has 3 letters
-      setFlickerIndex(randomIndex);
-      const flickerDuration = Math.random() * 500 + 100; // Randomize flicker duration between 100-600ms
-      setTimeout(() => setFlickerIndex(null), flickerDuration);
-    }, Math.random() * 2000 + 1000); // Randomize interval between 1-3 seconds
     
     return () => {
       document.body.classList.remove("cursor-custom");
-      clearInterval(flickerInterval);
     };
   }, []);
   
@@ -52,15 +45,8 @@ const Index = () => {
               />
             </div>
             
-            <h1 className="text-4xl font-bold mb-2 text-[#00ff00] neon-sign">
-              {"Dez".split('').map((letter, index) => (
-                <span 
-                  key={index} 
-                  className={`neon-letter ${index === flickerIndex ? 'flicker' : ''}`}
-                >
-                  {letter}
-                </span>
-              ))}
+            <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow">
+              Dez
             </h1>
             
             <div className="flex flex-col items-center justify-center gap-2 text-[#00ff00]/80 mb-6">

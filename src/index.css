@@ -211,42 +211,6 @@
       opacity: 0;
     }
   }
-
-  .neon-sign {
-    display: inline-block;
-  }
-
-  .neon-letter {
-    text-shadow: 
-      0 0 2px #00ff00,
-      0 0 4px #00ff00;
-    opacity: 0.85;
-    display: inline-block;
-    transition: opacity 0.05s ease;
-  }
-
-  .neon-letter.flicker {
-    animation: letter-flicker 0.1s infinite alternate;
-  }
-
-  @keyframes letter-flicker {
-    0% { 
-      opacity: 0.85; 
-      text-shadow: 
-        0 0 2px #00ff00,
-        0 0 4px #00ff00;
-    }
-    50% { 
-      opacity: 0.3; 
-      text-shadow: 
-        0 0 1px #00ff00,
-        0 0 2px #00ff00;
-    }
-    100% { 
-      opacity: 0.05; 
-      text-shadow: none;
-    }
-  }
 }
 
 body {
