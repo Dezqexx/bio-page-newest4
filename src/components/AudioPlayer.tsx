@@ -106,35 +106,49 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
   return (
     <div className="fixed top-4 left-4 flex flex-col items-center gap-2">
       <div className="flex gap-2">
-        <button
-          onClick={togglePlay}
-          className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
-          title={isPlaying ? "Pause" : "Play"}
-        >
-          {isPlaying ? (
-            <Volume2 className="w-6 h-6 text-[#00ff00]" />
-          ) : (
-            <VolumeX className="w-6 h-6 text-[#00ff00]" />
-          )}
-        </button>
-        
-        <button
-          onClick={skipToNextTrack}
-          className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
-          title="Next Track"
-        >
-          <SkipForward className="w-6 h-6 text-[#00ff00]" />
-        </button>
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              onClick={togglePlay}
+              className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
+              title={isPlaying ? "Pause" : "Play"}
+            >
+              {isPlaying ? (
+                <Volume2 className="w-6 h-6 text-[#00ff00]" />
+              ) : (
+                <VolumeX className="w-6 h-6 text-[#00ff00]" />
+              )}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-1 bg-black/80 text-[#00ff00] text-xs text-center rounded select-none">
+            {isPlaying ? "mute" : "mute"}
+          </PopoverContent>
+        </Popover>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              onClick={skipToNextTrack}
+              className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
+              title="Next Track"
+            >
+              <SkipForward className="w-6 h-6 text-[#00ff00]" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-1 bg-black/80 text-[#00ff00] text-xs text-center rounded select-none">
+            skip song
+          </PopoverContent>
+        </Popover>
       </div>
 
-      <div className="h-24 bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 rounded-full p-2">
+      <div className="w-32 h-12 bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 rounded-full p-2">
         <Slider
           defaultValue={[1]}
           value={[volume]}
           max={1}
           step={0.01}
-          orientation="vertical"
-          className="h-20"
+          orientation="horizontal"
+          className="w-full"
           onValueChange={handleVolumeChange}
         />
       </div>
@@ -145,3 +159,4 @@ const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProp
 };
 
 export default AudioPlayer;
+
