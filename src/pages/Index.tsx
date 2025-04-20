@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -15,6 +16,7 @@ const Index = () => {
   const [entered, setEntered] = useState(false);
   
   useEffect(() => {
+    // Apply cursor to entire document
     document.body.classList.add("cursor-custom");
     
     return () => {
@@ -43,7 +45,7 @@ const Index = () => {
               />
             </div>
             
-            <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow relative overflow-hidden shine-text">
+            <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow">
               Dez
             </h1>
             
@@ -72,3 +74,4 @@ const Index = () => {
 };
 
 export default Index;
+

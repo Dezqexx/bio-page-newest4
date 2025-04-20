@@ -211,36 +211,6 @@
       opacity: 0;
     }
   }
-
-  .shine-text {
-    position: relative;
-  }
-
-  .shine-text::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -100%;
-    width: 50%;
-    height: 200%;
-    background: linear-gradient(
-      to right,
-      transparent,
-      rgba(0, 255, 0, 0.2),
-      transparent
-    );
-    transform: rotate(30deg);
-    animation: shine 3s infinite;
-  }
-
-  @keyframes shine {
-    0% {
-      left: -100%;
-    }
-    100% {
-      left: 200%;
-    }
-  }
 }
 
 body {
