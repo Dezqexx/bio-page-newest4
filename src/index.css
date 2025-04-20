@@ -213,32 +213,53 @@
   }
 
   .neon-sign {
-    text-shadow: 
-      0 0 7px #00ff00,
-      0 0 10px #00ff00,
-      0 0 21px #00ff00,
-      0 0 42px #39FF14,
-      0 0 82px #39FF14,
-      0 0 92px #39FF14,
-      0 0 102px #39FF14,
-      0 0 151px #39FF14;
-    animation: flicker 1.5s infinite alternate;
+    display: inline-block;
   }
 
-  @keyframes flicker {
-    0%, 18%, 22%, 25%, 53%, 57%, 100% {
-      text-shadow:
-        0 0 7px #00ff00,
-        0 0 10px #00ff00,
-        0 0 21px #00ff00,
-        0 0 42px #39FF14,
-        0 0 82px #39FF14,
-        0 0 92px #39FF14,
-        0 0 102px #39FF14,
-        0 0 151px #39FF14;
+  .neon-letter {
+    text-shadow: 
+      0 0 2px #00ff00,
+      0 0 4px #00ff00,
+      0 0 6px #39FF14;
+    opacity: 0.85;
+  }
+
+  .neon-letter:nth-child(3n) {
+    animation: flicker-1 4s infinite;
+  }
+
+  .neon-letter:nth-child(3n + 1) {
+    animation: flicker-2 3.5s infinite;
+  }
+
+  .neon-letter:nth-child(3n + 2) {
+    animation: flicker-3 4.5s infinite;
+  }
+
+  @keyframes flicker-1 {
+    0%, 92%, 100% {
+      opacity: 0.85;
     }
-    20%, 24%, 55% {
-      text-shadow: none;
+    90%, 95% {
+      opacity: 0.4;
+    }
+  }
+
+  @keyframes flicker-2 {
+    0%, 94%, 100% {
+      opacity: 0.85;
+    }
+    93%, 95% {
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes flicker-3 {
+    0%, 97%, 100% {
+      opacity: 0.85;
+    }
+    96%, 98% {
+      opacity: 0.3;
     }
   }
 }

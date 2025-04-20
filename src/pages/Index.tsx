@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -45,8 +44,10 @@ const Index = () => {
               />
             </div>
             
-            <h1 className="text-4xl font-bold mb-2 text-[#00ff00] neon-sign glow">
-              Dez
+            <h1 className="text-4xl font-bold mb-2 text-[#00ff00] neon-sign">
+              {"Dez".split('').map((letter, index) => (
+                <span key={index} className="neon-letter">{letter}</span>
+              ))}
             </h1>
             
             <div className="flex flex-col items-center justify-center gap-2 text-[#00ff00]/80 mb-6">
