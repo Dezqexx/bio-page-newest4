@@ -29,7 +29,13 @@ const Index = () => {
       <RainEffect />
       <BackgroundVideo videoUrl="/your-video.mp4" />
       <AudioPlayer 
-        audioUrl="https://Im-a.femboylover.com/54fplvig.mp3" 
+        audioUrls={[
+          "https://Im-a.femboylover.com/54fplvig.mp3",
+          "https://grabify.click/pd8d2gd4.mp3",
+          "https://we-love.eboy.group/6vpxjt6v.mp3",
+          "https://we-love.eboy.group/ng47ic1q.mp3",
+          "https://we-love.egirl.group/npp4bil2.mp3"
+        ]} 
         autoplay={entered} 
         isVisible={entered} 
       />

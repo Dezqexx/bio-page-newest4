@@ -1,32 +1,81 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX, SkipForward } from 'lucide-react';
 import { Slider } from "@/components/ui/slider";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface AudioPlayerProps {
-  audioUrl: string;
+  audioUrls: string[];
   autoplay?: boolean;
   isVisible: boolean;
 }
 
-const AudioPlayer = ({ audioUrl, autoplay = false, isVisible }: AudioPlayerProps) => {
+const AudioPlayer = ({ audioUrls, autoplay = false, isVisible }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(-1);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  useEffect(() => {
-    if (autoplay && audioRef.current && isVisible) {
-      audioRef.current.play()
-        .then(() => {
-          setIsPlaying(true);
-        })
-        .catch(err => {
-          console.error("Failed to autoplay audio:", err);
-        });
-    }
-  }, [autoplay, isVisible]);
+  // Get a random track that's different from the current one (if possible)
+  const getRandomTrack = () => {
+    if (audioUrls.length === 0) return -1;
+    if (audioUrls.length === 1) return 0;
+    
+    // If we have more than one track, try to avoid playing the same track twice
+    let newIndex;
+    do {
+      newIndex = Math.floor(Math.random() * audioUrls.length);
+    } while (newIndex === currentTrackIndex && audioUrls.length > 1);
+    
+    return newIndex;
+  };
 
+  // Initialize with a random track on component mount
+  useEffect(() => {
+    if (audioUrls.length > 0 && currentTrackIndex === -1) {
+      setCurrentTrackIndex(getRandomTrack());
+    }
+  }, [audioUrls]);
+
+  // Play logic when track changes or autoplay triggers
+  useEffect(() => {
+    if (audioRef.current && currentTrackIndex !== -1) {
+      // Update audio source
+      audioRef.current.src = audioUrls[currentTrackIndex];
+      audioRef.current.load();
+      
+      // Play if autoplay is enabled and component is visible
+      if (autoplay && isVisible) {
+        audioRef.current.play()
+          .then(() => {
+            setIsPlaying(true);
+          })
+          .catch(err => {
+            console.error("Failed to autoplay audio:", err);
+          });
+      }
+    }
+  }, [currentTrackIndex, autoplay, isVisible, audioUrls]);
+
+  // Set up ended event listener to play next track
+  useEffect(() => {
+    const handleEnded = () => {
+      setCurrentTrackIndex(getRandomTrack());
+    };
+
+    const audioElement = audioRef.current;
+    if (audioElement) {
+      audioElement.addEventListener('ended', handleEnded);
+    }
+    
+    return () => {
+      if (audioElement) {
+        audioElement.removeEventListener('ended', handleEnded);
+      }
+    };
+  }, [currentTrackIndex, audioUrls]);
+
+  // Update volume when it changes
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
@@ -44,24 +93,39 @@ const AudioPlayer = ({ audioUrl, autoplay = false, isVisible }: AudioPlayerProps
     }
   };
 
+  const skipToNextTrack = () => {
+    setCurrentTrackIndex(getRandomTrack());
+  };
+
   const handleVolumeChange = (value: number[]) => {
     setVolume(value[0]);
   };
 
-  if (!isVisible) return null;
+  if (!isVisible || audioUrls.length === 0) return null;
 
   return (
     <div className="fixed top-4 left-4 flex flex-col items-center gap-2">
-      <button
-        onClick={togglePlay}
-        className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
-      >
-        {isPlaying ? (
-          <Volume2 className="w-6 h-6 text-[#00ff00]" />
-        ) : (
-          <VolumeX className="w-6 h-6 text-[#00ff00]" />
-        )}
-      </button>
+      <div className="flex gap-2">
+        <button
+          onClick={togglePlay}
+          className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
+          title={isPlaying ? "Pause" : "Play"}
+        >
+          {isPlaying ? (
+            <Volume2 className="w-6 h-6 text-[#00ff00]" />
+          ) : (
+            <VolumeX className="w-6 h-6 text-[#00ff00]" />
+          )}
+        </button>
+        
+        <button
+          onClick={skipToNextTrack}
+          className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
+          title="Next Track"
+        >
+          <SkipForward className="w-6 h-6 text-[#00ff00]" />
+        </button>
+      </div>
 
       <div className="h-24 bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 rounded-full p-2">
         <Slider
@@ -75,9 +139,7 @@ const AudioPlayer = ({ audioUrl, autoplay = false, isVisible }: AudioPlayerProps
         />
       </div>
 
-      <audio ref={audioRef} loop>
-        <source src={audioUrl} type="audio/mpeg" />
-      </audio>
+      <audio ref={audioRef}></audio>
     </div>
   );
 };
