@@ -55,10 +55,23 @@ const Index = () => {
       audio = new window.Audio();
       audioRef.current = audio;
     }
-    if (!audio.src || !audio.src.includes(songs[currentTrackIndex].url)) {
-      audio.src = songs[currentTrackIndex].url;
+    
+    const currentUrl = songs[currentTrackIndex].url;
+    
+    // Only update the src if it's different or not set
+    if (!audio.src || !audio.src.includes(currentUrl)) {
+      const wasPlaying = !audio.paused;
+      const currentPosition = audio.currentTime;
+      
+      audio.src = currentUrl;
       audio.load(); // Reload with new source
+      
+      // If switching tracks while playing, continue playing the new track
+      if (wasPlaying) {
+        audio.play().catch(() => {});
+      }
     }
+    
     audio.volume = volume;
 
     if (isPlaying) {
