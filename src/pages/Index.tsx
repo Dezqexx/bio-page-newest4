@@ -12,10 +12,10 @@ import MusicPlayer from "@/components/MusicPlayer";
 import "../assets/cursor.css";
 
 const songs = [
-  { url: "/lovable-uploads/Fukk Sleep.mp3", name: "Fukk Sleep" },
+  { url: "/lovable-uploads/Fukk.mp3", name: "Fukk Sleep" },
   { url: "/lovable-uploads/MOTION.mp3", name: "Motion" },
-  { url: "/lovable-uploads/Urban Melody.mp3", name: "Urban Melody" },
-  { url: "/lovable-uploads/Falling Down.mp3", name: "Falling Down" },
+  { url: "/lovable-uploads/Urban.mp3", name: "Urban Melody" },
+  { url: "/lovable-uploads/Falling.mp3", name: "Falling Down" },
   { url: "/lovable-uploads/ANGER.mp3", name: "Anger" }
 ];
 
