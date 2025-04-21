@@ -12,11 +12,11 @@ import MusicPlayer from "@/components/MusicPlayer";
 import "../assets/cursor.css";
 
 const songs = [
-  { url: "https://grabify.click/pd8d2gd4.mp3", name: "Fukk Sleep" },
-  { url: "https://we-love.eboy.group/6vpxjt6v.mp3", name: "Motion" },
-  { url: "https://we-love.eboy.group/ng47ic1q.mp3", name: "Urban Melody" },
-  { url: "https://we-love.egirl.group/npp4bil2.mp3", name: "Falling Down" },
-  { url: "https://im-a.femboylover.com/54fplvig.mp3", name: "Anger" } // Fixed URL casing
+  { url: "/lovable-uploads/Fukk Sleep.mp3", name: "Fukk Sleep" },
+  { url: "/lovable-uploads/MOTION.mp3", name: "Motion" },
+  { url: "/lovable-uploads/Urban Melody.mp3", name: "Urban Melody" },
+  { url: "/lovable-uploads/Falling Down.mp3", name: "Falling Down" },
+  { url: "/lovable-uploads/ANGER.mp3", name: "Anger" }
 ];
 
 // Generate a random index at module scope
