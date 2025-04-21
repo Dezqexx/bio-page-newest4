@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef, useCallback } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -144,9 +143,17 @@ const Index = () => {
   }, [currentTrackIndex]);
 
   const handleSkipForward = useCallback(() => {
-    setCurrentTrackIndex(idx => (idx + 1) % songs.length);
+    // Get the new track index
+    const newIndex = (currentTrackIndex + 1) % songs.length;
+    
+    // Reset the saved position for the song we're skipping to
+    const url = songs[newIndex].url;
+    savedPositions.current[url] = 0;
+    
+    // Update the track index
+    setCurrentTrackIndex(newIndex);
     setIsPlaying(true);
-  }, []);
+  }, [currentTrackIndex]);
 
   const handleSeek = (seekProgress: number) => {
     if (audioRef.current && duration) {
