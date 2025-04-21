@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -48,8 +49,15 @@ const Index = () => {
       audio = new window.Audio();
       audioRef.current = audio;
     }
-    audio.src = songs[currentTrackIndex].url;
+    
+    // Only set the source if it's a different song or audio is not yet loaded
+    if (!audio.src || !audio.src.includes(songs[currentTrackIndex].url)) {
+      audio.src = songs[currentTrackIndex].url;
+      audio.load(); // Reload with new source
+    }
+    
     audio.volume = volume;
+    
     if (isPlaying) {
       audio.play().catch(() => {});
     } else {
@@ -83,7 +91,6 @@ const Index = () => {
       audio.removeEventListener("durationchange", handleDurationChange);
       audio.removeEventListener("ended", handleEnded);
     };
-    // eslint-disable-next-line
   }, [currentTrackIndex, isPlaying, entered]);
 
   // Volume effect
