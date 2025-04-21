@@ -1,7 +1,7 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Play, Pause, SkipBack, SkipForward } from 'lucide-react';
-import { Progress } from "@/components/ui/progress";
+import { Slider } from "@/components/ui/slider";
 import TiltCard from '@/components/TiltCard';
 
 interface Song {
@@ -15,7 +15,7 @@ interface MusicPlayerProps {
   onPlayPause: () => void;
   onSkipBack: () => void;
   onSkipForward: () => void;
-  progress: number;
+  progress: number; // 0-100
   currentTime: number;
   duration: number;
   onSeek: (seek: number) => void;
@@ -32,20 +32,29 @@ const MusicPlayer = ({
   duration,
   onSeek
 }: MusicPlayerProps) => {
-  // Progress bar handler
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const bar = e.currentTarget;
-    const rect = bar.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const seekPercent = x / rect.width;
-    onSeek(seekPercent);
-  };
+  // State to manage slider drag
+  const [seeking, setSeeking] = useState(false);
+  const [dragValue, setDragValue] = useState(progress);
 
+  // Format time helper
   const formatTime = (seconds: number) => {
     if (!seconds || isNaN(seconds)) return '0:00';
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // When the user is dragging, show dragValue, otherwise progress
+  const displayProgress = seeking ? dragValue : progress;
+
+  // Handlers for the slider
+  const handleSliderChange = (value: number[]) => {
+    setSeeking(true);
+    setDragValue(value[0]);
+  };
+  const handleSliderCommit = (value: number[]) => {
+    setSeeking(false);
+    onSeek(value[0] / 100);
   };
 
   return (
@@ -81,16 +90,23 @@ const MusicPlayer = ({
         </button>
       </div>
       
-      {/* Interactive progress bar */}
-      <div className="w-full relative cursor-pointer" onClick={handleProgressClick}>
-        <Progress 
-          value={progress} 
-          className="h-1 bg-[#00ff00]/20" 
-          indicatorClassName="bg-[#00ff00]"
+      {/* Slider: draggable, progress bar with ball */}
+      <div className="w-full relative flex items-center cursor-pointer px-1">
+        <Slider
+          value={[displayProgress]}
+          min={0}
+          max={100}
+          step={0.1}
+          onValueChange={handleSliderChange}
+          onValueCommit={handleSliderCommit}
+          className="h-4"
+          thumbClassName="w-4 h-4 bg-[#00ff00] border-2 border-[#252d19] shadow-lg transition-all" // lime thumb
+          trackClassName="h-1 bg-[#00ff00]/20"
+          rangeClassName="bg-[#00ff00]"
         />
       </div>
       <div className="flex justify-between text-[#00ff00]/60 text-[10px] mt-1">
-        <span>{formatTime(currentTime)}</span>
+        <span>{formatTime(seeking ? (dragValue / 100) * duration : currentTime)}</span>
         <span>{formatTime(duration)}</span>
       </div>
     </TiltCard>
@@ -98,3 +114,4 @@ const MusicPlayer = ({
 };
 
 export default MusicPlayer;
+
