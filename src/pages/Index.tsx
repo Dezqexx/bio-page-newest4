@@ -131,9 +131,17 @@ const Index = () => {
   }, []);
 
   const handleSkipBack = useCallback(() => {
-    setCurrentTrackIndex(idx => (idx === 0 ? songs.length - 1 : idx - 1));
+    // Get the new track index
+    const newIndex = currentTrackIndex === 0 ? songs.length - 1 : currentTrackIndex - 1;
+    
+    // Reset the saved position for the song we're going back to
+    const url = songs[newIndex].url;
+    savedPositions.current[url] = 0;
+    
+    // Update the track index
+    setCurrentTrackIndex(newIndex);
     setIsPlaying(true);
-  }, []);
+  }, [currentTrackIndex]);
 
   const handleSkipForward = useCallback(() => {
     setCurrentTrackIndex(idx => (idx + 1) % songs.length);
