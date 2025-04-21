@@ -17,7 +17,7 @@ const songs = [
   { url: "https://we-love.eboy.group/6vpxjt6v.mp3", name: "Motion" },
   { url: "https://we-love.eboy.group/ng47ic1q.mp3", name: "Urban Melody" },
   { url: "https://we-love.egirl.group/npp4bil2.mp3", name: "Falling Down" },
-  { url: "https://Im-a.femboylover.com/54fplvig.mp3", name: "Anger" }
+  { url: "https://im-a.femboylover.com/54fplvig.mp3", name: "Anger" } // Fixed URL casing
 ];
 
 // Generate a random index at module scope
@@ -38,6 +38,7 @@ const Index = () => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const savedPositions = useRef<Record<string, number>>({});
 
   // Apply cursor to entire document
   useEffect(() => {
@@ -61,10 +62,15 @@ const Index = () => {
     // Only update the src if it's different or not set
     if (!audio.src || !audio.src.includes(currentUrl)) {
       const wasPlaying = !audio.paused;
-      const currentPosition = audio.currentTime;
+      const savedPosition = savedPositions.current[currentUrl] || 0;
       
       audio.src = currentUrl;
       audio.load(); // Reload with new source
+      
+      // Restore position if available
+      if (savedPosition > 0) {
+        audio.currentTime = savedPosition;
+      }
       
       // If switching tracks while playing, continue playing the new track
       if (wasPlaying) {
@@ -77,6 +83,8 @@ const Index = () => {
     if (isPlaying) {
       audio.play().catch(() => {});
     } else {
+      // Save position when pausing
+      savedPositions.current[currentUrl] = audio.currentTime;
       audio.pause();
     }
 
@@ -84,6 +92,8 @@ const Index = () => {
       setCurrentTime(audio!.currentTime);
       setDuration(audio!.duration || 0);
       setProgress(audio!.duration ? (audio!.currentTime / audio!.duration) * 100 : 0);
+      // Continuously update saved position
+      savedPositions.current[currentUrl] = audio!.currentTime;
     };
 
     const handleDurationChange = () => {
@@ -91,6 +101,8 @@ const Index = () => {
     };
 
     const handleEnded = () => {
+      // Clear saved position when track ends
+      savedPositions.current[currentUrl] = 0;
       handleSkipForward();
     };
 
@@ -106,7 +118,7 @@ const Index = () => {
       audio.removeEventListener("durationchange", handleDurationChange);
       audio.removeEventListener("ended", handleEnded);
     };
-  }, [currentTrackIndex, isPlaying, entered]);
+  }, [currentTrackIndex, isPlaying, entered, volume]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -132,6 +144,11 @@ const Index = () => {
     if (audioRef.current && duration) {
       const time = seekProgress * duration;
       audioRef.current.currentTime = time;
+      
+      // Also update saved position
+      const currentUrl = songs[currentTrackIndex].url;
+      savedPositions.current[currentUrl] = time;
+      
       setCurrentTime(time);
       setProgress(seekProgress * 100);
     }
