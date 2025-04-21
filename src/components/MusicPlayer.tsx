@@ -95,19 +95,6 @@ const MusicPlayer = ({ songs }: MusicPlayerProps) => {
     }
   };
   
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (audioRef.current) {
-      const progressBar = e.currentTarget;
-      const clickPosition = e.clientX - progressBar.getBoundingClientRect().left;
-      const progressWidth = progressBar.clientWidth;
-      const seekPercentage = clickPosition / progressWidth;
-      
-      const seekTime = seekPercentage * duration;
-      audioRef.current.currentTime = seekTime;
-      setProgress(seekPercentage * 100);
-    }
-  };
-  
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -150,16 +137,11 @@ const MusicPlayer = ({ songs }: MusicPlayerProps) => {
       </div>
       
       <div className="w-full">
-        <div 
-          className="relative cursor-pointer"
-          onClick={handleProgressClick}
-        >
-          <Progress 
-            value={progress} 
-            className="h-1 bg-[#00ff00]/20" 
-            indicatorClassName="bg-[#00ff00]"
-          />
-        </div>
+        <Progress 
+          value={progress} 
+          className="h-1 bg-[#00ff00]/20" 
+          indicatorClassName="bg-[#00ff00]"
+        />
         <div className="flex justify-between text-[#00ff00]/60 text-[10px] mt-1">
           <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration)}</span>
