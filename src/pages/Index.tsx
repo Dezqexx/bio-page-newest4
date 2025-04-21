@@ -20,6 +20,9 @@ const songs = [
   { url: "https://Im-a.femboylover.com/54fplvig.mp3", name: "Anger" }
 ];
 
+// Generate a random index at module scope
+const getRandomSongIndex = () => Math.floor(Math.random() * songs.length);
+
 const Index = () => {
   useSparkleEffect();
   const [entered, setEntered] = useState(false);
@@ -27,8 +30,8 @@ const Index = () => {
   // Use a ref to prevent rerolling the song on every render after entering
   const randomStarted = useRef(false);
 
-  // Track index state
-  const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(0);
+  // Initialize track index with a random value
+  const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(getRandomSongIndex());
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const [progress, setProgress] = useState(0);
@@ -125,15 +128,9 @@ const Index = () => {
     setVolume(v => (v === 0 ? 1 : 0));
   }, []);
 
-  // Only start playing when entering the site; pick a random song only once
+  // Only start playing when entering the site
   useEffect(() => {
     if (entered) {
-      // Don't pick again on re-entry
-      if (!randomStarted.current) {
-        const rand = Math.floor(Math.random() * songs.length);
-        setCurrentTrackIndex(rand);
-        randomStarted.current = true;
-      }
       setIsPlaying(true);
     }
   }, [entered]);
