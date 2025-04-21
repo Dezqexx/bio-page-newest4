@@ -20,7 +20,7 @@ const AudioPlayer = ({ isMuted, volume, onMute, onVolumeChange }: AudioPlayerPro
   return (
     <div className="fixed top-4 left-4 flex flex-col items-center gap-1 z-30">
       {/* Mute Button with custom green tooltip */}
-      <Tooltip>
+      <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
           <button
             onClick={onMute}
