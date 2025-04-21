@@ -24,14 +24,17 @@ const Index = () => {
   useSparkleEffect();
   const [entered, setEntered] = useState(false);
 
-  // Lifted audio player state
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  // Use a ref to prevent rerolling the song on every render after entering
+  const randomStarted = useRef(false);
+
+  // Track index state
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Apply cursor to entire document
   useEffect(() => {
@@ -41,7 +44,7 @@ const Index = () => {
     };
   }, []);
 
-  // Attach events to audio and keep in sync with state
+  // Audio attach and events logic
   useEffect(() => {
     if (!entered) return;
     let audio = audioRef.current;
@@ -49,15 +52,12 @@ const Index = () => {
       audio = new window.Audio();
       audioRef.current = audio;
     }
-    
-    // Only set the source if it's a different song or audio is not yet loaded
     if (!audio.src || !audio.src.includes(songs[currentTrackIndex].url)) {
       audio.src = songs[currentTrackIndex].url;
       audio.load(); // Reload with new source
     }
-    
     audio.volume = volume;
-    
+
     if (isPlaying) {
       audio.play().catch(() => {});
     } else {
@@ -82,7 +82,6 @@ const Index = () => {
     audio.addEventListener("durationchange", handleDurationChange);
     audio.addEventListener("ended", handleEnded);
 
-    // Set current time & duration at mount
     setCurrentTime(audio.currentTime);
     setDuration(audio.duration || 0);
 
@@ -93,14 +92,12 @@ const Index = () => {
     };
   }, [currentTrackIndex, isPlaying, entered]);
 
-  // Volume effect
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
     }
   }, [volume]);
 
-  // Handlers
   const togglePlay = useCallback(() => {
     setIsPlaying((v) => !v);
   }, []);
@@ -128,12 +125,23 @@ const Index = () => {
     setVolume(v => (v === 0 ? 1 : 0));
   }, []);
 
-  // Only start playing when entering the site
+  // Only start playing when entering the site; pick a random song only once
   useEffect(() => {
-    if (entered && audioRef.current) {
+    if (entered) {
+      // Don't pick again on re-entry
+      if (!randomStarted.current) {
+        const rand = Math.floor(Math.random() * songs.length);
+        setCurrentTrackIndex(rand);
+        randomStarted.current = true;
+      }
       setIsPlaying(true);
     }
   }, [entered]);
+
+  // Handle EnterScreen click
+  const handleEnter = () => {
+    setEntered(true);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center text-white relative overflow-hidden">
@@ -190,7 +198,7 @@ const Index = () => {
           />
         </div>
       ) : (
-        <EnterScreen onEnter={() => setEntered(true)} />
+        <EnterScreen onEnter={handleEnter} />
       )}
     </div>
   );
