@@ -100,7 +100,7 @@ const MusicPlayer = ({
           onValueChange={handleSliderChange}
           onValueCommit={handleSliderCommit}
           className="h-4"
-          thumbClassName="w-4 h-4 bg-[#00ff00] border-2 border-[#252d19] shadow-lg transition-all" // lime thumb
+          thumbClassName="w-4 h-4 bg-[#00ff00] border-2 border-[#252d19] shadow-lg transition-all"
           trackClassName="h-1 bg-[#00ff00]/20"
           rangeClassName="bg-[#00ff00]"
         />
@@ -114,4 +114,3 @@ const MusicPlayer = ({
 };
 
 export default MusicPlayer;
-
