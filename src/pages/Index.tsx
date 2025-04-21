@@ -12,6 +12,16 @@ import DiscordPresence from "@/components/DiscordPresence";
 import MusicPlayer from "@/components/MusicPlayer";
 import "../assets/cursor.css";
 
+const songs = [
+  { url: "https://grabify.click/pd8d2gd4.mp3", name: "Fukk Sleep" },
+  { url: "https://we-love.eboy.group/6vpxjt6v.mp3", name: "Motion" },
+  { url: "https://we-love.eboy.group/ng47ic1q.mp3", name: "Urban Melody" },
+  { url: "https://we-love.egirl.group/npp4bil2.mp3", name: "Falling Down" },
+  { url: "https://Im-a.femboylover.com/54fplvig.mp3", name: "Anger" }
+];
+
+const audioUrls = songs.map(song => song.url);
+
 const Index = () => {
   useSparkleEffect();
   const [entered, setEntered] = useState(false);
@@ -30,14 +40,8 @@ const Index = () => {
       <RainEffect />
       <BackgroundVideo videoUrl="/your-video.mp4" />
       <AudioPlayer 
-        audioUrls={[
-          "https://Im-a.femboylover.com/54fplvig.mp3",
-          "https://grabify.click/pd8d2gd4.mp3",
-          "https://we-love.eboy.group/6vpxjt6v.mp3",
-          "https://we-love.eboy.group/ng47ic1q.mp3",
-          "https://we-love.egirl.group/npp4bil2.mp3"
-        ]} 
-        autoplay={entered} 
+        audioUrls={audioUrls}
+        autoplay={false} 
         isVisible={entered} 
       />
       
@@ -73,13 +77,7 @@ const Index = () => {
           
           <DiscordPresence />
           
-          <MusicPlayer songs={[
-            { url: "https://grabify.click/pd8d2gd4.mp3", name: "Fukk Sleep" },
-            { url: "https://we-love.eboy.group/6vpxjt6v.mp3", name: "Motion" },
-            { url: "https://we-love.eboy.group/ng47ic1q.mp3", name: "Urban Melody" },
-            { url: "https://we-love.egirl.group/npp4bil2.mp3", name: "Falling Down" },
-            { url: "https://Im-a.femboylover.com/54fplvig.mp3", name: "Anger" }
-          ]} />
+          <MusicPlayer songs={songs} />
         </div>
       ) : (
         <EnterScreen onEnter={() => setEntered(true)} />
@@ -89,4 +87,3 @@ const Index = () => {
 };
 
 export default Index;
-
