@@ -10,6 +10,7 @@ import EnterScreen from "@/components/EnterScreen";
 import TiltCard from "@/components/TiltCard";
 import DiscordPresence from "@/components/DiscordPresence";
 import MusicPlayer from "@/components/MusicPlayer";
+import GridCardsLayout from "@/components/GridCardsLayout";
 import "../assets/cursor.css";
 
 const songs = [
