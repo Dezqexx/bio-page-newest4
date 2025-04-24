@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Play, Pause, SkipBack, SkipForward } from 'lucide-react';
 import { Slider } from "@/components/ui/slider";
+import TiltCard from '@/components/TiltCard';
 
 interface Song {
   url: string;
@@ -57,7 +58,7 @@ const MusicPlayer = ({
   };
 
   return (
-    <>
+    <TiltCard className="mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg backdrop-blur-sm max-w-[320px] w-full glow">
       <div className="mb-4">
         <h3 className="text-[#00ff00] font-medium text-lg mb-1">{song.name}</h3>
       </div>
@@ -108,7 +109,7 @@ const MusicPlayer = ({
         <span>{formatTime(seeking ? (dragValue / 100) * duration : currentTime)}</span>
         <span>{formatTime(duration)}</span>
       </div>
-    </>
+    </TiltCard>
   );
 };
 
