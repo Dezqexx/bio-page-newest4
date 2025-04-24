@@ -10,9 +10,10 @@ interface TiltElement extends HTMLDivElement {
 interface TiltCardProps {
   children: React.ReactNode;
   className?: string;
+  title?: string; // Add title prop to fix TS errors
 }
 
-const TiltCard = ({ children, className = "" }: TiltCardProps) => {
+const TiltCard = ({ children, className = "", title }: TiltCardProps) => {
   const tiltRef = useRef<TiltElement>(null);
   
   useEffect(() => {
@@ -36,9 +37,10 @@ const TiltCard = ({ children, className = "" }: TiltCardProps) => {
   return (
     <div 
       ref={tiltRef} 
-      className={`${className} tilt-card cursor-default max-w-[420px] w-full`} // Increased max-width
+      className={`${className} tilt-card cursor-default max-w-[420px] w-full`}
       style={{ boxShadow: '0 0 15px 2px rgba(0, 255, 0, 0.3)' }}
     >
+      {title && <h3 className="text-[#00ff00] font-bold mb-2">{title}</h3>}
       {children}
     </div>
   );

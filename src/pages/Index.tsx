@@ -6,7 +6,7 @@ import RainEffect from "@/components/RainEffect";
 import useSparkleEffect from "@/hooks/useSparkleEffect";
 import { MapPin, Calendar } from "lucide-react";
 import EnterScreen from "@/components/EnterScreen";
-import TiltCard from "@/components/TiltCard";
+import CircularCardArrangement from "@/components/CircularCardArrangement";
 import DiscordPresence from "@/components/DiscordPresence";
 import MusicPlayer from "@/components/MusicPlayer";
 import "../assets/cursor.css";
@@ -19,17 +19,12 @@ const songs = [
   { url: "/lovable-uploads/ANGER.mp3", name: "Anger" }
 ];
 
-// Generate a random index at module scope
 const getRandomSongIndex = () => Math.floor(Math.random() * songs.length);
 
 const Index = () => {
   useSparkleEffect();
   const [entered, setEntered] = useState(false);
 
-  // Use a ref to prevent rerolling the song on every render after entering
-  const randomStarted = useRef(false);
-
-  // Initialize track index with a random value
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(getRandomSongIndex());
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -39,7 +34,6 @@ const Index = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const savedPositions = useRef<Record<string, number>>({});
 
-  // Apply cursor to entire document
   useEffect(() => {
     document.body.classList.add("cursor-custom");
     return () => {
@@ -47,7 +41,6 @@ const Index = () => {
     };
   }, []);
 
-  // Audio attach and events logic
   useEffect(() => {
     if (!entered) return;
     let audio = audioRef.current;
@@ -58,20 +51,17 @@ const Index = () => {
     
     const currentUrl = songs[currentTrackIndex].url;
     
-    // Only update the src if it's different or not set
     if (!audio.src || !audio.src.includes(currentUrl)) {
       const wasPlaying = !audio.paused;
       const savedPosition = savedPositions.current[currentUrl] || 0;
       
       audio.src = currentUrl;
-      audio.load(); // Reload with new source
+      audio.load();
       
-      // Restore position if available
       if (savedPosition > 0) {
         audio.currentTime = savedPosition;
       }
       
-      // If switching tracks while playing, continue playing the new track
       if (wasPlaying) {
         audio.play().catch(() => {});
       }
@@ -82,7 +72,6 @@ const Index = () => {
     if (isPlaying) {
       audio.play().catch(() => {});
     } else {
-      // Save position when pausing
       savedPositions.current[currentUrl] = audio.currentTime;
       audio.pause();
     }
@@ -91,7 +80,6 @@ const Index = () => {
       setCurrentTime(audio!.currentTime);
       setDuration(audio!.duration || 0);
       setProgress(audio!.duration ? (audio!.currentTime / audio!.duration) * 100 : 0);
-      // Continuously update saved position
       savedPositions.current[currentUrl] = audio!.currentTime;
     };
 
@@ -100,7 +88,6 @@ const Index = () => {
     };
 
     const handleEnded = () => {
-      // Clear saved position when track ends
       savedPositions.current[currentUrl] = 0;
       handleSkipForward();
     };
@@ -130,27 +117,17 @@ const Index = () => {
   }, []);
 
   const handleSkipBack = useCallback(() => {
-    // Get the new track index
     const newIndex = currentTrackIndex === 0 ? songs.length - 1 : currentTrackIndex - 1;
-    
-    // Reset the saved position for the song we're going back to
     const url = songs[newIndex].url;
     savedPositions.current[url] = 0;
-    
-    // Update the track index
     setCurrentTrackIndex(newIndex);
     setIsPlaying(true);
   }, [currentTrackIndex]);
 
   const handleSkipForward = useCallback(() => {
-    // Get the new track index
     const newIndex = (currentTrackIndex + 1) % songs.length;
-    
-    // Reset the saved position for the song we're skipping to
     const url = songs[newIndex].url;
     savedPositions.current[url] = 0;
-    
-    // Update the track index
     setCurrentTrackIndex(newIndex);
     setIsPlaying(true);
   }, [currentTrackIndex]);
@@ -160,7 +137,6 @@ const Index = () => {
       const time = seekProgress * duration;
       audioRef.current.currentTime = time;
       
-      // Also update saved position
       const currentUrl = songs[currentTrackIndex].url;
       savedPositions.current[currentUrl] = time;
       
@@ -173,14 +149,69 @@ const Index = () => {
     setVolume(v => (v === 0 ? 1 : 0));
   }, []);
 
-  // Only start playing when entering the site
   useEffect(() => {
     if (entered) {
       setIsPlaying(true);
     }
   }, [entered]);
 
-  // Handle EnterScreen click
+  const profileCard = (
+    <>
+      <div className="w-32 h-32 mx-auto mb-6 rounded-full border-2 border-[#00ff00] overflow-hidden glow">
+        <img
+          src="https://grabify.click/q52w52ry.png"
+          alt="Profile"
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow">Dez</h1>
+
+      <div className="flex flex-col items-center justify-center gap-2 text-[#00ff00]/80 mb-6">
+        <div className="flex items-center gap-2">
+          <Calendar className="w-4 h-4" />
+          <span>Age: 19</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <MapPin className="w-4 h-4" />
+          <span>Germany</span>
+        </div>
+      </div>
+
+      <SocialLinks />
+    </>
+  );
+
+  const circularCards = [
+    {
+      id: "profile",
+      content: profileCard,
+      title: "Profile"
+    },
+    {
+      id: "discord",
+      content: <DiscordPresence />,
+      title: "Discord"
+    },
+    {
+      id: "music",
+      content: (
+        <MusicPlayer
+          song={songs[currentTrackIndex]}
+          isPlaying={isPlaying}
+          onPlayPause={togglePlay}
+          onSkipBack={handleSkipBack}
+          onSkipForward={handleSkipForward}
+          progress={progress}
+          currentTime={currentTime}
+          duration={duration}
+          onSeek={handleSeek}
+        />
+      ),
+      title: "Music"
+    }
+  ];
+
   const handleEnter = () => {
     setEntered(true);
   };
@@ -199,45 +230,8 @@ const Index = () => {
       )}
 
       {entered ? (
-        <div className="flex flex-col items-center">
-          <TiltCard className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
-            <div className="w-32 h-32 mx-auto mb-6 rounded-full border-2 border-[#00ff00] overflow-hidden glow">
-              <img
-                src="https://grabify.click/q52w52ry.png"
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow">Dez</h1>
-
-            <div className="flex flex-col items-center justify-center gap-2 text-[#00ff00]/80 mb-6">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span>Age: 19</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                <span>Germany</span>
-              </div>
-            </div>
-
-            <SocialLinks />
-          </TiltCard>
-
-          <DiscordPresence />
-
-          <MusicPlayer
-            song={songs[currentTrackIndex]}
-            isPlaying={isPlaying}
-            onPlayPause={togglePlay}
-            onSkipBack={handleSkipBack}
-            onSkipForward={handleSkipForward}
-            progress={progress}
-            currentTime={currentTime}
-            duration={duration}
-            onSeek={handleSeek}
-          />
+        <div className="flex flex-col items-center w-full">
+          <CircularCardArrangement cards={circularCards} />
         </div>
       ) : (
         <EnterScreen onEnter={handleEnter} />
