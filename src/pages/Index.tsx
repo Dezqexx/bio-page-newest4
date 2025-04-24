@@ -198,11 +198,13 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center mb-4">
               <SocialLinks />
             </div>
 
-            <div className="mt-6 border-t border-[#00ff00]/20 pt-6">
+            <div className="border-t-2 border-[#00ff00] my-6"></div>
+
+            <div>
               <DiscordPresence />
             </div>
           </TiltCard>
