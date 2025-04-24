@@ -12,9 +12,10 @@ interface DiscordActivityProps {
     progress: number;
     data: any;
   };
+  hideBorder?: boolean;
 }
 
-const DiscordActivity = ({ activity, elapsedTime, spotifyData }: DiscordActivityProps) => {
+const DiscordActivity = ({ activity, elapsedTime, spotifyData, hideBorder = false }: DiscordActivityProps) => {
   const isSpotify = spotifyData?.listening && activity.type === 2;
   
   const getSpotifyUrl = () => {
@@ -25,7 +26,7 @@ const DiscordActivity = ({ activity, elapsedTime, spotifyData }: DiscordActivity
   };
   
   return (
-    <div className="mt-2 border-t border-[#00ff00]/20 pt-2">
+    <div className={`mt-2 ${!hideBorder ? 'border-t border-[#00ff00]/20' : ''} pt-2`}>
       <div className="flex items-center space-x-3">
         <img
           src={getImageUrl(
@@ -89,4 +90,3 @@ const DiscordActivity = ({ activity, elapsedTime, spotifyData }: DiscordActivity
 };
 
 export default DiscordActivity;
-
