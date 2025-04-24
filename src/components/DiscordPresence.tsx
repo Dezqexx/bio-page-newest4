@@ -1,4 +1,3 @@
-
 import { MessageCircle } from 'lucide-react';
 import TiltCard from '@/components/TiltCard';
 import { useDiscordPresence } from '@/hooks/useDiscordPresence';
@@ -12,21 +11,17 @@ const DiscordPresence = () => {
 
   if (isLoading) {
     return (
-      <div className="mt-6 p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm animate-pulse max-w-[320px] w-full">
-        <div className="flex items-center justify-center">
-          <div className="h-8 w-36 bg-[#00ff00]/10 rounded"></div>
-        </div>
+      <div className="animate-pulse">
+        <div className="h-8 w-36 bg-[#00ff00]/10 rounded"></div>
       </div>
     );
   }
 
   if (error || !lanyardData) {
     return (
-      <div className="mt-6 p-4 border-2 border-[#00ff00]/20 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
-        <div className="flex items-center justify-center">
-          <MessageCircle className="w-5 h-5 text-[#00ff00]/50 mr-2" />
-          <span className="text-[#00ff00]/50">Discord presence unavailable</span>
-        </div>
+      <div className="flex items-center justify-center">
+        <MessageCircle className="w-5 h-5 text-[#00ff00]/50 mr-2" />
+        <span className="text-[#00ff00]/50">Discord presence unavailable</span>
       </div>
     );
   }
@@ -49,7 +44,7 @@ const DiscordPresence = () => {
   }
 
   return (
-    <TiltCard className="mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
+    <div className="w-full">
       <DiscordUser 
         user={discord_user} 
         status={discord_status} 
@@ -67,7 +62,7 @@ const DiscordPresence = () => {
           }
         />
       )}
-    </TiltCard>
+    </div>
   );
 };
 
