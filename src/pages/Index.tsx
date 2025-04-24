@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -200,7 +201,7 @@ const Index = () => {
 
       {entered ? (
         <div className="flex flex-col items-center max-w-3xl w-full px-4">
-          <TiltCard className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm w-full mb-6">
+          <TiltCard className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm w-full mb-4">
             {/* Profile Section */}
             <div className="w-32 h-32 mx-auto mb-6 rounded-full border-2 border-[#00ff00] overflow-hidden glow">
               <img
@@ -211,7 +212,6 @@ const Index = () => {
             </div>
 
             <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow">Dez</h1>
-            <p className="text-[#00ff00]/80 mb-6 text-lg italic">"Without music, life would be a mistake." — Friedrich Nietzsche</p>
 
             <div className="flex flex-col items-center justify-center gap-2 text-[#00ff00]/80 mb-6">
               <div className="flex items-center gap-2">
@@ -224,7 +224,9 @@ const Index = () => {
               </div>
             </div>
 
-            <SocialLinks />
+            <div className="flex justify-center mb-6">
+              <SocialLinks />
+            </div>
 
             {/* Discord Presence integrated into profile card */}
             <div className="mt-6 border-t border-[#00ff00]/20 pt-6">
@@ -253,3 +255,4 @@ const Index = () => {
 };
 
 export default Index;
+
