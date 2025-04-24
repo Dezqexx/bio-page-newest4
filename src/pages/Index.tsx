@@ -187,7 +187,7 @@ const Index = () => {
 
             <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow">Dez</h1>
 
-            <div className="flex flex-col items-center justify-center gap-2 text-[#00ff00]/80 mb-4">
+            <div className="flex flex-col items-center justify-center gap-2 text-[#00ff00]/80 mb-2">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 <span>Age: 19</span>
@@ -198,13 +198,11 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center mb-4">
               <SocialLinks />
             </div>
 
-            <div className="mt-6 border-t border-[#00ff00]/20 pt-6">
-              <DiscordPresence />
-            </div>
+            <DiscordPresence />
           </TiltCard>
 
           <MusicPlayer
