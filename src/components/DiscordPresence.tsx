@@ -1,4 +1,3 @@
-
 import { MessageCircle } from 'lucide-react';
 import TiltCard from '@/components/TiltCard';
 import { useDiscordPresence } from '@/hooks/useDiscordPresence';
@@ -45,7 +44,7 @@ const DiscordPresence = () => {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <DiscordUser 
         user={discord_user} 
         status={discord_status} 
