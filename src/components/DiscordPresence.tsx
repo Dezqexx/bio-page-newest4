@@ -1,4 +1,3 @@
-
 import { MessageCircle } from 'lucide-react';
 import TiltCard from '@/components/TiltCard';
 import { useDiscordPresence } from '@/hooks/useDiscordPresence';
@@ -61,7 +60,6 @@ const DiscordPresence = () => {
               ? { listening: true, progress: spotifyProgress, data: spotify } 
               : undefined
           }
-          hideBorder
         />
       )}
     </div>
