@@ -199,8 +199,8 @@ const Index = () => {
       )}
 
       {entered ? (
-        <div className="flex flex-col items-center">
-          <TiltCard className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full">
+        <div className="flex flex-col items-center gap-6">
+          <TiltCard className="relative z-10 text-center border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm" title="Profile">
             <div className="w-32 h-32 mx-auto mb-6 rounded-full border-2 border-[#00ff00] overflow-hidden glow">
               <img
                 src="https://grabify.click/q52w52ry.png"
@@ -225,19 +225,23 @@ const Index = () => {
             <SocialLinks />
           </TiltCard>
 
-          <DiscordPresence />
+          <TiltCard className="relative z-10 bg-black/30 backdrop-blur-sm border-2 border-[#00ff00]/50 rounded-lg" title="Discord Presence">
+            <DiscordPresence />
+          </TiltCard>
 
-          <MusicPlayer
-            song={songs[currentTrackIndex]}
-            isPlaying={isPlaying}
-            onPlayPause={togglePlay}
-            onSkipBack={handleSkipBack}
-            onSkipForward={handleSkipForward}
-            progress={progress}
-            currentTime={currentTime}
-            duration={duration}
-            onSeek={handleSeek}
-          />
+          <TiltCard className="relative z-10 bg-black/30 backdrop-blur-sm border-2 border-[#00ff00]/50 rounded-lg" title="Music Player">
+            <MusicPlayer
+              song={songs[currentTrackIndex]}
+              isPlaying={isPlaying}
+              onPlayPause={togglePlay}
+              onSkipBack={handleSkipBack}
+              onSkipForward={handleSkipForward}
+              progress={progress}
+              currentTime={currentTime}
+              duration={duration}
+              onSeek={handleSeek}
+            />
+          </TiltCard>
         </div>
       ) : (
         <EnterScreen onEnter={handleEnter} />
