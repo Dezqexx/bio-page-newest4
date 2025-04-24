@@ -36,7 +36,7 @@ const TiltCard = ({ children, className = "" }: TiltCardProps) => {
   return (
     <div 
       ref={tiltRef} 
-      className={`${className} tilt-card cursor-default`}
+      className={`${className} tilt-card cursor-default max-w-[420px] w-full`} // Increased max-width
       style={{ boxShadow: '0 0 15px 2px rgba(0, 255, 0, 0.3)' }}
     >
       {children}
