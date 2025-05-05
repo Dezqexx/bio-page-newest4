@@ -4,8 +4,7 @@ import AudioPlayer from "@/components/AudioPlayer";
 import SocialLinks from "@/components/SocialLinks";
 import RainEffect from "@/components/RainEffect";
 import useSparkleEffect from "@/hooks/useSparkleEffect";
-import useViewCount from "@/hooks/useViewCount";
-import { MapPin, Calendar, Eye } from "lucide-react";
+import { MapPin, Calendar } from "lucide-react";
 import EnterScreen from "@/components/EnterScreen";
 import TiltCard from "@/components/TiltCard";
 import DiscordPresence from "@/components/DiscordPresence";
@@ -24,7 +23,6 @@ const getRandomSongIndex = () => Math.floor(Math.random() * songs.length);
 
 const Index = () => {
   useSparkleEffect();
-  const { count: viewCount } = useViewCount();
   const [entered, setEntered] = useState(false);
 
   const randomStarted = useRef(false);
@@ -179,12 +177,6 @@ const Index = () => {
       {entered ? (
         <div className="flex flex-col items-center max-w-3xl w-full px-4">
           <TiltCard className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm w-full mb-4">
-            {/* View Counter */}
-            <div className="absolute top-2 left-3 flex items-center gap-1 text-xs text-[#00ff00]/80 bg-black/50 px-2 py-1 rounded-full">
-              <Eye className="w-3 h-3" />
-              <span>{viewCount.toLocaleString()}</span>
-            </div>
-
             <div className="w-32 h-32 mx-auto mb-6 rounded-full border-2 border-[#00ff00] overflow-hidden glow">
               <img
                 src="https://grabify.click/q52w52ry.png"
