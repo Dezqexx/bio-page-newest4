@@ -88,6 +88,39 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  /* Theme color schemes */
+  .theme-default {
+    --theme-primary: #00ff00;
+    --theme-secondary: #39FF14;
+    --theme-accent: #0FFF50;
+    --theme-glow: rgba(0, 255, 0, 0.3);
+    --theme-border: rgba(0, 255, 0, 0.5);
+  }
+
+  .theme-blue {
+    --theme-primary: #0EA5E9;
+    --theme-secondary: #38BDF8;
+    --theme-accent: #7DD3FC;
+    --theme-glow: rgba(14, 165, 233, 0.3);
+    --theme-border: rgba(14, 165, 233, 0.5);
+  }
+
+  .theme-purple {
+    --theme-primary: #8B5CF6;
+    --theme-secondary: #A78BFA;
+    --theme-accent: #C4B5FD;
+    --theme-glow: rgba(139, 92, 246, 0.3);
+    --theme-border: rgba(139, 92, 246, 0.5);
+  }
+
+  .theme-red {
+    --theme-primary: #EA384C;
+    --theme-secondary: #F87171;
+    --theme-accent: #FCA5A5;
+    --theme-glow: rgba(234, 56, 76, 0.3);
+    --theme-border: rgba(234, 56, 76, 0.5);
+  }
 }
 
 @layer base {
@@ -102,7 +135,7 @@
 
 @layer utilities {
   .glow {
-    filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.3));
+    filter: drop-shadow(0 0 8px var(--theme-glow, rgba(0, 255, 0, 0.3)));
   }
 
   .cursor-custom {
@@ -113,40 +146,40 @@
     position: fixed;
     width: 1.5px;
     height: 30px;
-    background: linear-gradient(transparent, rgba(0, 255, 0, 0.7));
+    background: linear-gradient(transparent, var(--theme-primary, rgba(0, 255, 0, 0.7)));
     z-index: 1;
     animation: rain linear forwards;
     opacity: 0.7;
-    box-shadow: 0 0 4px rgba(0, 255, 0, 0.5), 0 0 8px rgba(57, 255, 20, 0.3);
+    box-shadow: 0 0 4px var(--theme-glow, rgba(0, 255, 0, 0.5)), 0 0 8px var(--theme-secondary, rgba(57, 255, 20, 0.3));
   }
 
   .lightning-main {
     position: fixed;
     z-index: 2;
     pointer-events: none;
-    filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.8));
+    filter: drop-shadow(0 0 8px var(--theme-glow, rgba(14, 165, 233, 0.8)));
     animation: lightning-flicker 0.3s linear;
   }
 
   .lightning-segment {
     position: absolute;
     width: 3px;
-    background: #00ff00; 
+    background: var(--theme-primary, #00ff00); 
     box-shadow: 
-      0 0 5px #00ff00,
-      0 0 10px #39FF14, 
-      0 0 20px rgba(15, 255, 80, 0.5);
+      0 0 5px var(--theme-primary, #00ff00),
+      0 0 10px var(--theme-secondary, #39FF14), 
+      0 0 20px var(--theme-accent, rgba(15, 255, 80, 0.5));
     opacity: 0.95;
   }
 
   .lightning-branch {
     position: absolute;
     width: 2px;
-    background: #0FFF50; 
+    background: var(--theme-accent, #0FFF50); 
     box-shadow: 
-      0 0 4px #00ff00,
-      0 0 8px #39FF14, 
-      0 0 12px rgba(15, 255, 80, 0.4);
+      0 0 4px var(--theme-primary, #00ff00),
+      0 0 8px var(--theme-secondary, #39FF14), 
+      0 0 12px var(--theme-accent, rgba(15, 255, 80, 0.4));
     opacity: 0.8;
     pointer-events: none;
   }
@@ -157,7 +190,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(57, 255, 20, 0.1);
+    background: var(--theme-secondary, rgba(57, 255, 20, 0.1));
     z-index: 1;
     pointer-events: none;
     transition: opacity 0.05s ease-in-out;
