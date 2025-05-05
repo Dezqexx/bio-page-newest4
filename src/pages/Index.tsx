@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -9,6 +10,7 @@ import EnterScreen from "@/components/EnterScreen";
 import TiltCard from "@/components/TiltCard";
 import DiscordPresence from "@/components/DiscordPresence";
 import MusicPlayer from "@/components/MusicPlayer";
+import IPAddressDisplay from "@/components/IPAddressDisplay";
 import "../assets/cursor.css";
 
 const songs = [
@@ -166,12 +168,15 @@ const Index = () => {
       <RainEffect />
       <BackgroundVideo videoUrl="/your-video.mp4" />
       {entered && (
-        <AudioPlayer
-          isMuted={volume === 0}
-          volume={volume}
-          onMute={handleMute}
-          onVolumeChange={setVolume}
-        />
+        <>
+          <IPAddressDisplay />
+          <AudioPlayer
+            isMuted={volume === 0}
+            volume={volume}
+            onMute={handleMute}
+            onVolumeChange={setVolume}
+          />
+        </>
       )}
 
       {entered ? (
