@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef, useCallback } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -10,9 +9,6 @@ import EnterScreen from "@/components/EnterScreen";
 import TiltCard from "@/components/TiltCard";
 import DiscordPresence from "@/components/DiscordPresence";
 import MusicPlayer from "@/components/MusicPlayer";
-import LoadingAnimation from "@/components/LoadingAnimation";
-import WeatherWidget from "@/components/WeatherWidget";
-import VisitorMap from "@/components/VisitorMap";
 import "../assets/cursor.css";
 
 const songs = [
@@ -28,7 +24,6 @@ const getRandomSongIndex = () => Math.floor(Math.random() * songs.length);
 const Index = () => {
   useSparkleEffect();
   const [entered, setEntered] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   const randomStarted = useRef(false);
 
@@ -40,16 +35,6 @@ const Index = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const savedPositions = useRef<Record<string, number>>({});
-
-  // Simulate loading
-  useEffect(() => {
-    if (entered) {
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [entered]);
 
   useEffect(() => {
     document.body.classList.add("cursor-custom");
@@ -189,16 +174,9 @@ const Index = () => {
         />
       )}
 
-      {entered && isLoading ? (
-        <LoadingAnimation />
-      ) : entered ? (
+      {entered ? (
         <div className="flex flex-col items-center max-w-3xl w-full px-4">
           <TiltCard className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm w-full mb-4">
-            <div className="absolute top-2 left-2 flex flex-col gap-2">
-              <WeatherWidget />
-              <VisitorMap />
-            </div>
-            
             <div className="w-32 h-32 mx-auto mb-6 rounded-full border-2 border-[#00ff00] overflow-hidden glow">
               <img
                 src="https://grabify.click/q52w52ry.png"
