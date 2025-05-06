@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
 import SocialLinks from "@/components/SocialLinks";
@@ -9,6 +10,7 @@ import EnterScreen from "@/components/EnterScreen";
 import TiltCard from "@/components/TiltCard";
 import DiscordPresence from "@/components/DiscordPresence";
 import MusicPlayer from "@/components/MusicPlayer";
+import Navigation from "@/components/Navigation";
 import "../assets/cursor.css";
 
 const songs = [
@@ -23,7 +25,8 @@ const getRandomSongIndex = () => Math.floor(Math.random() * songs.length);
 
 const Index = () => {
   useSparkleEffect();
-  const [entered, setEntered] = useState(false);
+  const location = useLocation();
+  const [entered, setEntered] = useState(location.state?.entered || false);
 
   const randomStarted = useRef(false);
 
@@ -165,6 +168,7 @@ const Index = () => {
     <div className="min-h-screen flex items-center justify-center text-white relative overflow-hidden">
       <RainEffect />
       <BackgroundVideo videoUrl="/your-video.mp4" />
+      {entered && <Navigation />}
       {entered && (
         <AudioPlayer
           isMuted={volume === 0}
