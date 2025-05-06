@@ -1,6 +1,5 @@
-
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -26,7 +25,16 @@ const getRandomSongIndex = () => Math.floor(Math.random() * songs.length);
 
 const Index = () => {
   useSparkleEffect();
+  const location = useLocation();
   const [entered, setEntered] = useState(false);
+
+  // Check if user is coming from another page by looking at location state
+  useEffect(() => {
+    // Skip enter screen if coming from another page
+    if (location.state?.fromPage) {
+      setEntered(true);
+    }
+  }, [location]);
 
   const randomStarted = useRef(false);
 
@@ -178,10 +186,10 @@ const Index = () => {
           />
           <div className="absolute top-4 right-4 z-30 flex gap-2">
             <Button variant="outline" className="text-white border-[#00ff00] hover:bg-[#00ff00]/20">
-              <Link to="/about">About</Link>
+              <Link to="/about" state={{ fromPage: "index" }}>About</Link>
             </Button>
             <Button variant="outline" className="text-white border-[#00ff00] hover:bg-[#00ff00]/20">
-              <Link to="/game">Game</Link>
+              <Link to="/game" state={{ fromPage: "index" }}>Game</Link>
             </Button>
           </div>
         </>
