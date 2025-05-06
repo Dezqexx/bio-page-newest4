@@ -4,13 +4,24 @@ import RainEffect from "@/components/RainEffect";
 import useSparkleEffect from "@/hooks/useSparkleEffect";
 import TiltCard from "@/components/TiltCard";
 import { HomeIcon } from "lucide-react";
+import Navigation from "@/components/Navigation";
+import AudioPlayer from "@/components/AudioPlayer";
+import { useAudio } from "@/contexts/AudioContext";
 
 const About = () => {
   useSparkleEffect();
+  const audio = useAudio();
 
   return (
     <div className="min-h-screen flex items-center justify-center text-white relative overflow-hidden">
       <RainEffect />
+      <Navigation />
+      <AudioPlayer
+        isMuted={audio.volume === 0}
+        volume={audio.volume}
+        onMute={audio.handleMute}
+        onVolumeChange={audio.setVolume}
+      />
 
       <div className="flex flex-col items-center max-w-3xl w-full px-4">
         <TiltCard className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm w-full">
