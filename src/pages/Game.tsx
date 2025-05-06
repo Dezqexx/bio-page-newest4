@@ -56,7 +56,7 @@ const Game = () => {
       <RainEffect />
       <div className="absolute top-4 left-4 z-30">
         <Button variant="outline" className="text-white border-[#00ff00] hover:bg-[#00ff00]/20">
-          <Link to="/">Home</Link>
+          <Link to="/" state={{ fromPage: "game" }}>Home</Link>
         </Button>
       </div>
       
@@ -104,7 +104,7 @@ const Game = () => {
         
         <div className="mt-6">
           <Button variant="outline" className="text-white border-[#00ff00] hover:bg-[#00ff00]/20">
-            <Link to="/">Back to Home</Link>
+            <Link to="/" state={{ fromPage: "game" }}>Back to Home</Link>
           </Button>
         </div>
       </TiltCard>

@@ -18,7 +18,7 @@ const About = () => {
       <RainEffect />
       <div className="absolute top-4 left-4 z-30">
         <Button variant="outline" className="text-white border-[#00ff00] hover:bg-[#00ff00]/20">
-          <Link to="/">Home</Link>
+          <Link to="/" state={{ fromPage: "about" }}>Home</Link>
         </Button>
       </div>
       
@@ -45,7 +45,7 @@ const About = () => {
         
         <div className="mt-8">
           <Button variant="outline" className="text-white border-[#00ff00] hover:bg-[#00ff00]/20">
-            <Link to="/">Back to Home</Link>
+            <Link to="/" state={{ fromPage: "about" }}>Back to Home</Link>
           </Button>
         </div>
       </TiltCard>
