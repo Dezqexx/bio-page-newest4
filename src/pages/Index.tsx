@@ -1,4 +1,7 @@
+
 import { useState, useEffect, useRef, useCallback } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
 import SocialLinks from "@/components/SocialLinks";
@@ -166,12 +169,22 @@ const Index = () => {
       <RainEffect />
       <BackgroundVideo videoUrl="/your-video.mp4" />
       {entered && (
-        <AudioPlayer
-          isMuted={volume === 0}
-          volume={volume}
-          onMute={handleMute}
-          onVolumeChange={setVolume}
-        />
+        <>
+          <AudioPlayer
+            isMuted={volume === 0}
+            volume={volume}
+            onMute={handleMute}
+            onVolumeChange={setVolume}
+          />
+          <div className="absolute top-4 right-4 z-30 flex gap-2">
+            <Button variant="outline" className="text-white border-[#00ff00] hover:bg-[#00ff00]/20">
+              <Link to="/about">About</Link>
+            </Button>
+            <Button variant="outline" className="text-white border-[#00ff00] hover:bg-[#00ff00]/20">
+              <Link to="/game">Game</Link>
+            </Button>
+          </div>
+        </>
       )}
 
       {entered ? (
