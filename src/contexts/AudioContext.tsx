@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useRef, useState, useEffect } from 'react';
 
 interface Song {
@@ -110,7 +109,8 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
   }, [currentTrackIndex, isPlaying, volume]);
 
   const togglePlay = () => {
-    setIsPlaying(prev => !prev);
+    console.log("Toggle Play Called, current state:", isPlaying);
+    setIsPlaying(!isPlaying);
   };
 
   const handleSkipBack = () => {

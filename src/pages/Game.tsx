@@ -3,12 +3,12 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import RainEffect from "@/components/RainEffect";
 import useSparkleEffect from "@/hooks/useSparkleEffect";
-import TiltCard from "@/components/TiltCard";
 import { HomeIcon } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import AudioPlayer from "@/components/AudioPlayer";
 import MusicPlayer from "@/components/MusicPlayer";
 import { useAudio } from "@/contexts/AudioContext";
+import { Card } from "@/components/ui/card";
 
 const Game = () => {
   useSparkleEffect();
@@ -76,7 +76,7 @@ const Game = () => {
       />
 
       <div className="flex flex-col items-center max-w-3xl w-full px-4">
-        <TiltCard className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm w-full">
+        <Card className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm w-full">
           <h1 className="text-4xl font-bold mb-4 text-[#00ff00] glow">Click Game</h1>
           
           <div className="mb-8">
@@ -146,7 +146,7 @@ const Game = () => {
             <HomeIcon size={18} />
             Back to Home
           </Link>
-        </TiltCard>
+        </Card>
       </div>
     </div>
   );
