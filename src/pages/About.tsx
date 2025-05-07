@@ -6,6 +6,7 @@ import TiltCard from "@/components/TiltCard";
 import { HomeIcon } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import AudioPlayer from "@/components/AudioPlayer";
+import MusicPlayer from "@/components/MusicPlayer";
 import { useAudio } from "@/contexts/AudioContext";
 
 const About = () => {
@@ -40,10 +41,24 @@ const About = () => {
             </p>
           </div>
 
+          <div className="mb-4">
+            <MusicPlayer
+              song={audio.currentSong}
+              isPlaying={audio.isPlaying}
+              onPlayPause={audio.togglePlay}
+              onSkipBack={audio.handleSkipBack}
+              onSkipForward={audio.handleSkipForward}
+              progress={audio.progress}
+              currentTime={audio.currentTime}
+              duration={audio.duration}
+              onSeek={audio.handleSeek}
+            />
+          </div>
+
           <Link 
             to="/" 
             state={{ entered: true }}
-            className="inline-flex items-center gap-2 bg-black/50 border-2 border-[#00ff00]/50 text-[#00ff00] px-6 py-3 rounded-lg hover:bg-[#00ff00]/10 transition-all"
+            className="inline-flex items-center gap-2 mt-4 bg-black/50 border-2 border-[#00ff00]/50 text-[#00ff00] px-6 py-3 rounded-lg hover:bg-[#00ff00]/10 transition-all"
           >
             <HomeIcon size={18} />
             Back to Home
