@@ -37,6 +37,7 @@ const Index = () => {
 
   const handleEnter = () => {
     setEntered(true);
+    audio.togglePlay();
   };
 
   return (

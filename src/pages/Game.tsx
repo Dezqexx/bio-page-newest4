@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import RainEffect from "@/components/RainEffect";
 import useSparkleEffect from "@/hooks/useSparkleEffect";
@@ -15,7 +15,8 @@ const Game = () => {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
   const [gameActive, setGameActive] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: 50, y: 50 });
+  const gameAreaRef = useRef<HTMLDivElement>(null);
 
   const startGame = () => {
     setScore(0);
@@ -25,12 +26,18 @@ const Game = () => {
   };
 
   const randomizePosition = () => {
-    const maxWidth = window.innerWidth * 0.7;
-    const maxHeight = window.innerHeight * 0.6;
+    if (!gameAreaRef.current) return;
+    
+    const gameArea = gameAreaRef.current.getBoundingClientRect();
+    const circleSize = 48; // size of the circle (12px * 2) + some margin
+    
+    // Calculate valid boundaries
+    const maxX = gameArea.width - circleSize;
+    const maxY = gameArea.height - circleSize;
     
     setPosition({
-      x: Math.max(20, Math.floor(Math.random() * maxWidth)),
-      y: Math.max(20, Math.floor(Math.random() * maxHeight))
+      x: Math.max(circleSize, Math.floor(Math.random() * maxX)),
+      y: Math.max(circleSize, Math.floor(Math.random() * maxY))
     });
   };
 
@@ -92,13 +99,15 @@ const Game = () => {
           </div>
           
           {gameActive && (
-            <div className="relative h-[300px] w-full border border-[#00ff00]/30 bg-black/20 rounded-lg overflow-hidden mb-4">
+            <div 
+              ref={gameAreaRef}
+              className="relative h-[300px] w-full border border-[#00ff00]/30 bg-black/20 rounded-lg overflow-hidden mb-4"
+            >
               <div 
                 className="absolute w-12 h-12 bg-[#00ff00]/80 rounded-full cursor-pointer hover:bg-[#00ff00] transition-all glow"
                 style={{
                   left: `${position.x}px`,
-                  top: `${position.y}px`,
-                  transform: 'translate(-50%, -50%)'
+                  top: `${position.y}px`
                 }}
                 onClick={handleClick}
               />

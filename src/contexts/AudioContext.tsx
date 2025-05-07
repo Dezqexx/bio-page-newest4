@@ -110,7 +110,7 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
   }, [currentTrackIndex, isPlaying, volume]);
 
   const togglePlay = () => {
-    setIsPlaying((v) => !v);
+    setIsPlaying((prev) => !prev);
   };
 
   const handleSkipBack = () => {
