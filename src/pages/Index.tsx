@@ -1,5 +1,4 @@
-
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
 import SocialLinks from "@/components/SocialLinks";
@@ -10,28 +9,32 @@ import EnterScreen from "@/components/EnterScreen";
 import TiltCard from "@/components/TiltCard";
 import DiscordPresence from "@/components/DiscordPresence";
 import MusicPlayer from "@/components/MusicPlayer";
-import Navigation from "@/components/Navigation";
-import { useAudioContext } from "@/contexts/AudioContext";
 import "../assets/cursor.css";
+
+const songs = [
+  { url: "/lovable-uploads/Fukk.mp3", name: "Fukk Sleep" },
+  { url: "/lovable-uploads/MOTION.mp3", name: "Motion" },
+  { url: "/lovable-uploads/Urban.mp3", name: "Urban Melody" },
+  { url: "/lovable-uploads/Falling.mp3", name: "Falling Down" },
+  { url: "/lovable-uploads/ANGER.mp3", name: "Anger" }
+];
+
+const getRandomSongIndex = () => Math.floor(Math.random() * songs.length);
 
 const Index = () => {
   useSparkleEffect();
   const [entered, setEntered] = useState(false);
-  
-  const { 
-    currentTrack, 
-    isPlaying, 
-    togglePlay, 
-    handleSkipBack, 
-    handleSkipForward, 
-    progress,
-    currentTime,
-    duration,
-    handleSeek,
-    volume,
-    handleMute,
-    setVolume
-  } = useAudioContext();
+
+  const randomStarted = useRef(false);
+
+  const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(getRandomSongIndex());
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(1);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const savedPositions = useRef<Record<string, number>>({});
 
   useEffect(() => {
     document.body.classList.add("cursor-custom");
@@ -41,10 +44,118 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    if (entered && !isPlaying) {
-      togglePlay();
+    if (!entered) return;
+    let audio = audioRef.current;
+    if (!audio) {
+      audio = new window.Audio();
+      audioRef.current = audio;
     }
-  }, [entered, isPlaying, togglePlay]);
+    
+    const currentUrl = songs[currentTrackIndex].url;
+    
+    if (!audio.src || !audio.src.includes(currentUrl)) {
+      const wasPlaying = !audio.paused;
+      const savedPosition = savedPositions.current[currentUrl] || 0;
+      
+      audio.src = currentUrl;
+      audio.load();
+      
+      if (savedPosition > 0) {
+        audio.currentTime = savedPosition;
+      }
+      
+      if (wasPlaying) {
+        audio.play().catch(() => {});
+      }
+    }
+    
+    audio.volume = volume;
+
+    if (isPlaying) {
+      audio.play().catch(() => {});
+    } else {
+      savedPositions.current[currentUrl] = audio.currentTime;
+      audio.pause();
+    }
+
+    const handleTimeUpdate = () => {
+      setCurrentTime(audio!.currentTime);
+      setDuration(audio!.duration || 0);
+      setProgress(audio!.duration ? (audio!.currentTime / audio!.duration) * 100 : 0);
+      savedPositions.current[currentUrl] = audio!.currentTime;
+    };
+
+    const handleDurationChange = () => {
+      setDuration(audio!.duration || 0);
+    };
+
+    const handleEnded = () => {
+      savedPositions.current[currentUrl] = 0;
+      handleSkipForward();
+    };
+
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("durationchange", handleDurationChange);
+    audio.addEventListener("ended", handleEnded);
+
+    setCurrentTime(audio.currentTime);
+    setDuration(audio.duration || 0);
+
+    return () => {
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("durationchange", handleDurationChange);
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, [currentTrackIndex, isPlaying, entered, volume]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
+
+  const togglePlay = useCallback(() => {
+    setIsPlaying((v) => !v);
+  }, []);
+
+  const handleSkipBack = useCallback(() => {
+    const newIndex = currentTrackIndex === 0 ? songs.length - 1 : currentTrackIndex - 1;
+    const url = songs[newIndex].url;
+    savedPositions.current[url] = 0;
+    setCurrentTrackIndex(newIndex);
+    setIsPlaying(true);
+  }, [currentTrackIndex]);
+
+  const handleSkipForward = useCallback(() => {
+    const newIndex = (currentTrackIndex + 1) % songs.length;
+    const url = songs[newIndex].url;
+    savedPositions.current[url] = 0;
+    setCurrentTrackIndex(newIndex);
+    setIsPlaying(true);
+  }, [currentTrackIndex]);
+
+  const handleSeek = (seekProgress: number) => {
+    if (audioRef.current && duration) {
+      const time = seekProgress * duration;
+      audioRef.current.currentTime = time;
+      
+      const currentUrl = songs[currentTrackIndex].url;
+      savedPositions.current[currentUrl] = time;
+      
+      setCurrentTime(time);
+      setProgress(seekProgress * 100);
+    }
+  };
+
+  const handleMute = useCallback(() => {
+    setVolume(v => (v === 0 ? 1 : 0));
+  }, []);
+
+  useEffect(() => {
+    if (entered) {
+      setIsPlaying(true);
+    }
+  }, [entered]);
 
   const handleEnter = () => {
     setEntered(true);
@@ -55,15 +166,12 @@ const Index = () => {
       <RainEffect />
       <BackgroundVideo videoUrl="/your-video.mp4" />
       {entered && (
-        <>
-          <AudioPlayer
-            isMuted={volume === 0}
-            volume={volume}
-            onMute={handleMute}
-            onVolumeChange={setVolume}
-          />
-          <Navigation />
-        </>
+        <AudioPlayer
+          isMuted={volume === 0}
+          volume={volume}
+          onMute={handleMute}
+          onVolumeChange={setVolume}
+        />
       )}
 
       {entered ? (
@@ -101,19 +209,17 @@ const Index = () => {
             </div>
           </TiltCard>
 
-          {currentTrack && (
-            <MusicPlayer
-              song={currentTrack}
-              isPlaying={isPlaying}
-              onPlayPause={togglePlay}
-              onSkipBack={handleSkipBack}
-              onSkipForward={handleSkipForward}
-              progress={progress}
-              currentTime={currentTime}
-              duration={duration}
-              onSeek={handleSeek}
-            />
-          )}
+          <MusicPlayer
+            song={songs[currentTrackIndex]}
+            isPlaying={isPlaying}
+            onPlayPause={togglePlay}
+            onSkipBack={handleSkipBack}
+            onSkipForward={handleSkipForward}
+            progress={progress}
+            currentTime={currentTime}
+            duration={duration}
+            onSeek={handleSeek}
+          />
         </div>
       ) : (
         <EnterScreen onEnter={handleEnter} />
