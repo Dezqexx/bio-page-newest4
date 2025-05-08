@@ -45,6 +45,7 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const savedPositions = useRef<Record<string, number>>({});
+  const lastToggleTime = useRef<number>(0);
 
   useEffect(() => {
     let audio = audioRef.current;
@@ -111,10 +112,24 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   }, [currentTrackIndex, isPlaying, volume]);
 
   const togglePlay = () => {
-    setIsPlaying(!isPlaying);
+    // Prevent rapid toggling by enforcing a cooldown period
+    const now = Date.now();
+    if (now - lastToggleTime.current < 300) {
+      return; // Ignore toggle if less than 300ms since last toggle
+    }
+    lastToggleTime.current = now;
+    
+    setIsPlaying(prev => !prev);
   };
 
   const handleSkipBack = () => {
+    // Add debounce for skip actions too
+    const now = Date.now();
+    if (now - lastToggleTime.current < 300) {
+      return;
+    }
+    lastToggleTime.current = now;
+    
     const newIndex = currentTrackIndex === 0 ? songs.length - 1 : currentTrackIndex - 1;
     const url = songs[newIndex].url;
     savedPositions.current[url] = 0;
@@ -122,6 +137,13 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleSkipForward = () => {
+    // Add debounce for skip actions too
+    const now = Date.now();
+    if (now - lastToggleTime.current < 300) {
+      return;
+    }
+    lastToggleTime.current = now;
+    
     const newIndex = (currentTrackIndex + 1) % songs.length;
     const url = songs[newIndex].url;
     savedPositions.current[url] = 0;

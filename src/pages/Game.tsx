@@ -216,13 +216,17 @@ const Game = () => {
           
           <div
             ref={gameAreaRef}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!gameActive && !gameOver) {
+                startGame();
+              }
+            }}
             className={`relative w-full h-[400px] border-2 ${
               gameActive ? "border-[#00ff00]" : "border-[#00ff00]/30"
             } rounded-lg overflow-hidden mb-6 ${
               gameActive ? "bg-black/40" : "bg-black/20"
-            } backdrop-blur-sm`}
-            style={{ cursor: gameActive ? "crosshair" : "default" }}
+            } backdrop-blur-sm cursor-pointer`}
           >
             {!gameActive && !gameOver && (
               <div className="absolute inset-0 flex items-center justify-center text-[#00ff00]/70 text-xl">
@@ -245,7 +249,7 @@ const Game = () => {
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-[#00ff00] font-bold">{index + 1}</span>
-                        <span>{player.name}</span>
+                        <span className="text-[#00ff00]">{player.name}</span>
                       </div>
                       <div className="flex items-center gap-4">
                         <span className="text-[#00ff00] font-bold">{player.score}</span>

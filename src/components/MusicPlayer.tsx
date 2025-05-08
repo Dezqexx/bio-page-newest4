@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Play, Pause, SkipBack, SkipForward } from 'lucide-react';
 import { Slider } from "@/components/ui/slider";
 import TiltCard from '@/components/TiltCard';
@@ -35,6 +35,7 @@ const MusicPlayer = ({
   // State to manage slider drag
   const [seeking, setSeeking] = useState(false);
   const [dragValue, setDragValue] = useState(progress);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   // Format time helper
   const formatTime = (seconds: number) => {
@@ -52,10 +53,45 @@ const MusicPlayer = ({
     setSeeking(true);
     setDragValue(value[0]);
   };
+  
   const handleSliderCommit = (value: number[]) => {
     setSeeking(false);
     onSeek(value[0] / 100);
   };
+
+  // Debounced button handlers
+  const handlePlayPause = useCallback(() => {
+    if (isButtonDisabled) return;
+    
+    setIsButtonDisabled(true);
+    onPlayPause();
+    
+    setTimeout(() => {
+      setIsButtonDisabled(false);
+    }, 300);
+  }, [isButtonDisabled, onPlayPause]);
+
+  const handleSkipBackClick = useCallback(() => {
+    if (isButtonDisabled) return;
+    
+    setIsButtonDisabled(true);
+    onSkipBack();
+    
+    setTimeout(() => {
+      setIsButtonDisabled(false);
+    }, 300);
+  }, [isButtonDisabled, onSkipBack]);
+
+  const handleSkipForwardClick = useCallback(() => {
+    if (isButtonDisabled) return;
+    
+    setIsButtonDisabled(true);
+    onSkipForward();
+    
+    setTimeout(() => {
+      setIsButtonDisabled(false);
+    }, 300);
+  }, [isButtonDisabled, onSkipForward]);
 
   return (
     <TiltCard className="mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg backdrop-blur-sm max-w-[320px] w-full glow">
@@ -65,15 +101,17 @@ const MusicPlayer = ({
       
       <div className="flex justify-center items-center space-x-4 mb-4">
         <button
-          onClick={onSkipBack}
+          onClick={handleSkipBackClick}
           className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
+          disabled={isButtonDisabled}
         >
           <SkipBack className="w-6 h-6 text-[#00ff00]" />
         </button>
         
         <button
-          onClick={onPlayPause}
+          onClick={handlePlayPause}
           className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
+          disabled={isButtonDisabled}
         >
           {isPlaying ? (
             <Pause className="w-6 h-6 text-[#00ff00]" />
@@ -83,8 +121,9 @@ const MusicPlayer = ({
         </button>
         
         <button
-          onClick={onSkipForward}
+          onClick={handleSkipForwardClick}
           className="p-2 rounded-full bg-black/20 backdrop-blur-sm border border-[#00ff00]/20 hover:bg-black/40 transition-all duration-300"
+          disabled={isButtonDisabled}
         >
           <SkipForward className="w-6 h-6 text-[#00ff00]" />
         </button>
