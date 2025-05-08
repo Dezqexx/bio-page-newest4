@@ -6,6 +6,9 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import RainEffect from "@/components/RainEffect";
+import MusicPlayer from "@/components/MusicPlayer";
+import { useAudio } from "@/context/AudioContext";
+import AudioPlayer from "@/components/AudioPlayer";
 
 type Player = {
   name: string;
@@ -22,6 +25,7 @@ const Game = () => {
   const [leaderboard, setLeaderboard] = useState<Player[]>([]);
   const gameAreaRef = useRef<HTMLDivElement>(null);
   const targetsRef = useRef<HTMLDivElement[]>([]);
+  const audio = useAudio();
 
   // Initialize leaderboard from localStorage
   useEffect(() => {
@@ -161,10 +165,23 @@ const Game = () => {
     setPlayerName("");
   };
 
+  const handleGameAreaClick = () => {
+    if (!gameActive && !gameOver) {
+      startGame();
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col text-white relative overflow-hidden">
       <BackgroundVideo videoUrl="/your-video.mp4" />
       <RainEffect />
+      
+      <AudioPlayer
+        isMuted={audio.volume === 0}
+        volume={audio.volume}
+        onMute={() => audio.setVolume(audio.volume === 0 ? 1 : 0)}
+        onVolumeChange={audio.setVolume}
+      />
       
       <div className="container mx-auto flex flex-col items-center justify-center py-8 z-10 relative">
         <h1 className="text-4xl font-bold mb-6 text-[#00ff00] glow">Neon Shooter</h1>
@@ -216,12 +233,7 @@ const Game = () => {
           
           <div
             ref={gameAreaRef}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!gameActive && !gameOver) {
-                startGame();
-              }
-            }}
+            onClick={handleGameAreaClick}
             className={`relative w-full h-[400px] border-2 ${
               gameActive ? "border-[#00ff00]" : "border-[#00ff00]/30"
             } rounded-lg overflow-hidden mb-6 ${
@@ -235,34 +247,50 @@ const Game = () => {
             )}
           </div>
           
-          <Card className="border-[#00ff00]/30 bg-black/40 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-[#00ff00]">Leaderboard</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {leaderboard.length > 0 ? (
-                <div className="space-y-2">
-                  {leaderboard.map((player, index) => (
-                    <div 
-                      key={`${player.name}-${index}`}
-                      className="flex justify-between items-center p-2 rounded-md bg-black/50 border border-[#00ff00]/20"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-[#00ff00] font-bold">{index + 1}</span>
-                        <span className="text-[#00ff00]">{player.name}</span>
+          <div className="flex flex-wrap gap-6 justify-between">
+            <Card className="border-[#00ff00]/30 bg-black/40 backdrop-blur-sm flex-1 min-w-[320px]">
+              <CardHeader>
+                <CardTitle className="text-[#00ff00]">Leaderboard</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {leaderboard.length > 0 ? (
+                  <div className="space-y-2">
+                    {leaderboard.map((player, index) => (
+                      <div 
+                        key={`${player.name}-${index}`}
+                        className="flex justify-between items-center p-2 rounded-md bg-black/50 border border-[#00ff00]/20"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-[#00ff00] font-bold">{index + 1}</span>
+                          <span className="text-[#00ff00]">{player.name}</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className="text-[#00ff00] font-bold">{player.score}</span>
+                          <span className="text-xs text-[#00ff00]/60">{player.date}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <span className="text-[#00ff00] font-bold">{player.score}</span>
-                        <span className="text-xs opacity-60">{player.date}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-white/60">No scores yet. Be the first!</p>
-              )}
-            </CardContent>
-          </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center text-white/60">No scores yet. Be the first!</p>
+                )}
+              </CardContent>
+            </Card>
+            
+            <div className="min-w-[320px] flex-1 flex justify-center">
+              <MusicPlayer
+                song={audio.song}
+                isPlaying={audio.isPlaying}
+                onPlayPause={audio.togglePlay}
+                onSkipBack={audio.handleSkipBack}
+                onSkipForward={audio.handleSkipForward}
+                progress={audio.progress}
+                currentTime={audio.currentTime}
+                duration={audio.duration}
+                onSeek={audio.handleSeek}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
