@@ -266,7 +266,7 @@ const Game = () => {
                         </div>
                         <div className="flex items-center gap-4">
                           <span className="text-[#00ff00] font-bold">{player.score}</span>
-                          <span className="text-xs text-[#00ff00]/60">{player.date}</span>
+                          <span className="text-xs text-[#00ff00]">{player.date}</span>
                         </div>
                       </div>
                     ))}
@@ -277,19 +277,24 @@ const Game = () => {
               </CardContent>
             </Card>
             
-            <div className="min-w-[320px] flex-1 flex justify-center">
-              <MusicPlayer
-                song={audio.song}
-                isPlaying={audio.isPlaying}
-                onPlayPause={audio.togglePlay}
-                onSkipBack={audio.handleSkipBack}
-                onSkipForward={audio.handleSkipForward}
-                progress={audio.progress}
-                currentTime={audio.currentTime}
-                duration={audio.duration}
-                onSeek={audio.handleSeek}
-              />
-            </div>
+            <Card className="border-[#00ff00]/30 bg-black/40 backdrop-blur-sm flex-1 min-w-[320px]">
+              <CardHeader>
+                <CardTitle className="text-[#00ff00]">Music Player</CardTitle>
+              </CardHeader>
+              <CardContent className="flex justify-center">
+                <MusicPlayer
+                  song={audio.song}
+                  isPlaying={audio.isPlaying}
+                  onPlayPause={audio.togglePlay}
+                  onSkipBack={audio.handleSkipBack}
+                  onSkipForward={audio.handleSkipForward}
+                  progress={audio.progress}
+                  currentTime={audio.currentTime}
+                  duration={audio.duration}
+                  onSeek={audio.handleSeek}
+                />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
