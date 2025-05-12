@@ -19,6 +19,7 @@ interface MusicPlayerProps {
   currentTime: number;
   duration: number;
   onSeek: (seek: number) => void;
+  className?: string;
 }
 
 const MusicPlayer = ({
@@ -30,7 +31,8 @@ const MusicPlayer = ({
   progress,
   currentTime,
   duration,
-  onSeek
+  onSeek,
+  className = ""
 }: MusicPlayerProps) => {
   // State to manage slider drag
   const [seeking, setSeeking] = useState(false);
@@ -58,7 +60,7 @@ const MusicPlayer = ({
   };
 
   return (
-    <TiltCard className="mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg backdrop-blur-sm max-w-[320px] w-full glow">
+    <TiltCard className={`mt-6 text-center p-4 border-2 border-[#00ff00]/50 rounded-lg backdrop-blur-sm bg-black max-w-[320px] w-full glow ${className}`}>
       <div className="mb-4">
         <h3 className="text-[#00ff00] font-medium text-lg mb-1">{song.name}</h3>
       </div>

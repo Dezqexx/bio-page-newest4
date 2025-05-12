@@ -1,14 +1,17 @@
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
 import SocialLinks from "@/components/SocialLinks";
 import RainEffect from "@/components/RainEffect";
 import useSparkleEffect from "@/hooks/useSparkleEffect";
-import { MapPin, Calendar } from "lucide-react";
+import { MapPin, Calendar, Gamepad } from "lucide-react";
 import EnterScreen from "@/components/EnterScreen";
 import TiltCard from "@/components/TiltCard";
 import DiscordPresence from "@/components/DiscordPresence";
 import MusicPlayer from "@/components/MusicPlayer";
+import NeonShooterGame from "@/components/NeonShooterGame";
+import { Button } from "@/components/ui/button";
 import "../assets/cursor.css";
 
 const songs = [
@@ -24,6 +27,7 @@ const getRandomSongIndex = () => Math.floor(Math.random() * songs.length);
 const Index = () => {
   useSparkleEffect();
   const [entered, setEntered] = useState(false);
+  const [showGame, setShowGame] = useState(false);
 
   const randomStarted = useRef(false);
 
@@ -35,6 +39,8 @@ const Index = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const savedPositions = useRef<Record<string, number>>({});
+  const wasPlayingBeforePause = useRef(false);
+  const userInitiated = useRef(false);
 
   useEffect(() => {
     document.body.classList.add("cursor-custom");
@@ -73,7 +79,7 @@ const Index = () => {
 
     if (isPlaying) {
       audio.play().catch(() => {});
-    } else {
+    } else if (userInitiated.current) {
       savedPositions.current[currentUrl] = audio.currentTime;
       audio.pause();
     }
@@ -94,17 +100,32 @@ const Index = () => {
       handleSkipForward();
     };
 
+    const handlePause = () => {
+      if (!userInitiated.current) {
+        // Auto-paused by browser, try to resume
+        if (wasPlayingBeforePause.current) {
+          audio!.play().catch(() => {
+            // If it fails, update UI to show paused state
+            setIsPlaying(false);
+          });
+        }
+      }
+      userInitiated.current = false;
+    };
+
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("durationchange", handleDurationChange);
     audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("pause", handlePause);
 
     setCurrentTime(audio.currentTime);
     setDuration(audio.duration || 0);
 
     return () => {
-      audio.removeEventListener("timeupdate", handleTimeUpdate);
-      audio.removeEventListener("durationchange", handleDurationChange);
-      audio.removeEventListener("ended", handleEnded);
+      audio!.removeEventListener("timeupdate", handleTimeUpdate);
+      audio!.removeEventListener("durationchange", handleDurationChange);
+      audio!.removeEventListener("ended", handleEnded);
+      audio!.removeEventListener("pause", handlePause);
     };
   }, [currentTrackIndex, isPlaying, entered, volume]);
 
@@ -115,8 +136,10 @@ const Index = () => {
   }, [volume]);
 
   const togglePlay = useCallback(() => {
+    userInitiated.current = true;
+    wasPlayingBeforePause.current = isPlaying;
     setIsPlaying((v) => !v);
-  }, []);
+  }, [isPlaying]);
 
   const handleSkipBack = useCallback(() => {
     const newIndex = currentTrackIndex === 0 ? songs.length - 1 : currentTrackIndex - 1;
@@ -161,6 +184,10 @@ const Index = () => {
     setEntered(true);
   };
 
+  const toggleGameView = () => {
+    setShowGame(prev => !prev);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center text-white relative overflow-hidden">
       <RainEffect />
@@ -174,52 +201,88 @@ const Index = () => {
         />
       )}
 
+      {entered && (
+        <div className="fixed top-4 right-4 z-30">
+          <Button
+            variant="outline"
+            onClick={toggleGameView}
+            className="relative flex gap-2 items-center border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm text-[#00ff00] hover:bg-black/40 hover:border-[#00ff00]/70"
+          >
+            <Gamepad className="w-5 h-5" />
+            {showGame ? "Profile" : "Game"}
+          </Button>
+        </div>
+      )}
+
       {entered ? (
         <div className="flex flex-col items-center max-w-3xl w-full px-4">
-          <TiltCard className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm w-full mb-4">
-            <div className="w-32 h-32 mx-auto mb-6 rounded-full border-2 border-[#00ff00] overflow-hidden glow">
-              <img
-                src="https://grabify.click/q52w52ry.png"
-                alt="Profile"
-                className="w-full h-full object-cover"
+          {showGame ? (
+            <div className="flex flex-col md:flex-row items-start justify-center gap-4 w-full">
+              <div className="w-full md:w-3/5">
+                <NeonShooterGame />
+              </div>
+              <div className="w-full md:w-2/5 mt-6 md:mt-0">
+                <MusicPlayer
+                  song={songs[currentTrackIndex]}
+                  isPlaying={isPlaying}
+                  onPlayPause={togglePlay}
+                  onSkipBack={handleSkipBack}
+                  onSkipForward={handleSkipForward}
+                  progress={progress}
+                  currentTime={currentTime}
+                  duration={duration}
+                  onSeek={handleSeek}
+                />
+              </div>
+            </div>
+          ) : (
+            <>
+              <TiltCard className="relative z-10 text-center p-8 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm w-full mb-4">
+                <div className="w-32 h-32 mx-auto mb-6 rounded-full border-2 border-[#00ff00] overflow-hidden glow">
+                  <img
+                    src="https://grabify.click/q52w52ry.png"
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow">Dez</h1>
+
+                <div className="flex flex-col items-center justify-center gap-2 text-[#00ff00]/80 mb-4">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    <span>Age: 19</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    <span>Germany</span>
+                  </div>
+                </div>
+
+                <div className="flex justify-center mb-4">
+                  <SocialLinks />
+                </div>
+
+                <div className="border-t-2 border-[#00ff00] my-6"></div>
+
+                <div>
+                  <DiscordPresence />
+                </div>
+              </TiltCard>
+
+              <MusicPlayer
+                song={songs[currentTrackIndex]}
+                isPlaying={isPlaying}
+                onPlayPause={togglePlay}
+                onSkipBack={handleSkipBack}
+                onSkipForward={handleSkipForward}
+                progress={progress}
+                currentTime={currentTime}
+                duration={duration}
+                onSeek={handleSeek}
               />
-            </div>
-
-            <h1 className="text-4xl font-bold mb-2 text-[#00ff00] glow">Dez</h1>
-
-            <div className="flex flex-col items-center justify-center gap-2 text-[#00ff00]/80 mb-4">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span>Age: 19</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                <span>Germany</span>
-              </div>
-            </div>
-
-            <div className="flex justify-center mb-4">
-              <SocialLinks />
-            </div>
-
-            <div className="border-t-2 border-[#00ff00] my-6"></div>
-
-            <div>
-              <DiscordPresence />
-            </div>
-          </TiltCard>
-
-          <MusicPlayer
-            song={songs[currentTrackIndex]}
-            isPlaying={isPlaying}
-            onPlayPause={togglePlay}
-            onSkipBack={handleSkipBack}
-            onSkipForward={handleSkipForward}
-            progress={progress}
-            currentTime={currentTime}
-            duration={duration}
-            onSeek={handleSeek}
-          />
+            </>
+          )}
         </div>
       ) : (
         <EnterScreen onEnter={handleEnter} />
