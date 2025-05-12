@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import TiltCard from './TiltCard';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
 
 interface Target {
   id: number;
@@ -23,6 +25,7 @@ const NeonShooterGame = () => {
   const [timeLeft, setTimeLeft] = useState(30);
   const [targets, setTargets] = useState<Target[]>([]);
   const [playerName, setPlayerName] = useState('');
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [leaderboard, setLeaderboard] = useState<ScoreEntry[]>([
     { name: "Neon", score: 42, date: "2025-05-12" },
     { name: "Cyber", score: 38, date: "2025-05-11" },
@@ -115,18 +118,51 @@ const NeonShooterGame = () => {
           Time: {timeLeft}s
         </div>
       </div>
+
+      {/* Game instruction text */}
+      <div className="text-center mb-4">
+        <p className="text-[#00ff00] text-lg">
+          Shoot as many balls as you can within 30 seconds!
+        </p>
+      </div>
       
-      {!gameActive && !showNameInput && (
-        <Button 
-          onClick={startGame}
-          className="bg-black/70 border border-[#00ff00] text-[#00ff00] hover:bg-black/90 hover:text-[#00ff00] hover:border-[#00ff00]/80 transition-all"
-        >
-          Start Game
-        </Button>
-      )}
+      {/* Game area is always visible */}
+      <div 
+        ref={gameAreaRef}
+        className="relative w-full h-[300px] border-2 border-[#00ff00]/50 rounded-lg backdrop-blur-sm bg-black/30 cursor-crosshair mb-4"
+      >
+        {gameActive ? (
+          targets.map(target => (
+            <div
+              key={target.id}
+              style={{
+                position: 'absolute',
+                left: `${target.x}px`,
+                top: `${target.y}px`,
+                width: `${target.size}px`,
+                height: `${target.size}px`,
+                borderRadius: '50%',
+                backgroundColor: '#00ff00',
+                boxShadow: '0 0 15px 5px rgba(0, 255, 0, 0.5)',
+                cursor: 'pointer'
+              }}
+              onClick={() => handleTargetClick(target.id)}
+            />
+          ))
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Button 
+              onClick={startGame}
+              className="bg-black/70 border border-[#00ff00] text-[#00ff00] hover:bg-black/90 hover:text-[#00ff00] hover:border-[#00ff00]/80 transition-all"
+            >
+              {showNameInput ? "Play Again" : "Click to Start"}
+            </Button>
+          </div>
+        )}
+      </div>
       
       {showNameInput && (
-        <div className="flex flex-col items-center gap-4 text-[#00ff00]">
+        <div className="flex flex-col items-center gap-4 text-[#00ff00] mb-4">
           <p className="text-xl">Great job! You scored {score} points.</p>
           <div className="flex gap-2">
             <input
@@ -147,52 +183,44 @@ const NeonShooterGame = () => {
         </div>
       )}
       
-      {gameActive && (
-        <div 
-          ref={gameAreaRef}
-          className="relative w-full h-[300px] border-2 border-[#00ff00]/50 rounded-lg backdrop-blur-sm bg-black/30 cursor-crosshair"
-        >
-          {targets.map(target => (
-            <div
-              key={target.id}
-              style={{
-                position: 'absolute',
-                left: `${target.x}px`,
-                top: `${target.y}px`,
-                width: `${target.size}px`,
-                height: `${target.size}px`,
-                borderRadius: '50%',
-                backgroundColor: '#00ff00',
-                boxShadow: '0 0 15px 5px rgba(0, 255, 0, 0.5)',
-                cursor: 'pointer'
-              }}
-              onClick={() => handleTargetClick(target.id)}
-            />
-          ))}
-        </div>
-      )}
-      
-      <TiltCard className="relative text-center p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm max-w-[320px] w-full glow">
-        <h2 className="text-2xl font-bold text-[#00ff00] mb-4">Leaderboard</h2>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-[#00ff00]">Name</TableHead>
-              <TableHead className="text-[#00ff00]">Score</TableHead>
-              <TableHead className="text-[#00ff00]">Date</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {leaderboard.map((entry, index) => (
-              <TableRow key={index}>
-                <TableCell className="text-white">{entry.name}</TableCell>
-                <TableCell className="text-white">{entry.score}</TableCell>
-                <TableCell className="text-[#00ff00]">{entry.date}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TiltCard>
+      {/* Collapsible Leaderboard */}
+      <Collapsible 
+        open={leaderboardOpen} 
+        onOpenChange={setLeaderboardOpen} 
+        className="w-full max-w-[320px]"
+      >
+        <CollapsibleTrigger asChild>
+          <Button 
+            variant="outline" 
+            className="w-full bg-black/70 border border-[#00ff00]/50 text-[#00ff00] hover:bg-black/90 flex items-center justify-between"
+          >
+            <span>Leaderboard</span>
+            <ChevronDown className={`h-4 w-4 transition-transform ${leaderboardOpen ? "transform rotate-180" : ""}`} />
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-2">
+          <TiltCard className="relative text-center p-4 border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm w-full glow">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-[#00ff00]">Name</TableHead>
+                  <TableHead className="text-[#00ff00]">Score</TableHead>
+                  <TableHead className="text-[#00ff00]">Date</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {leaderboard.map((entry, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="text-white">{entry.name}</TableCell>
+                    <TableCell className="text-white">{entry.score}</TableCell>
+                    <TableCell className="text-[#00ff00]">{entry.date}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TiltCard>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 };

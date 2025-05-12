@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef, useCallback } from "react";
 import BackgroundVideo from "@/components/BackgroundVideo";
 import AudioPlayer from "@/components/AudioPlayer";
