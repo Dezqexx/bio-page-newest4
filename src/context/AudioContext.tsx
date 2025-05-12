@@ -46,6 +46,7 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const savedPositions = useRef<Record<string, number>>({});
   const lastToggleTime = useRef<number>(0);
+  const userInitiatedPause = useRef<boolean>(false);
 
   useEffect(() => {
     let audio = audioRef.current;
@@ -76,7 +77,7 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
 
     if (isPlaying) {
       audio.play().catch(() => {});
-    } else {
+    } else if (userInitiatedPause.current) {
       savedPositions.current[currentUrl] = audio.currentTime;
       audio.pause();
     }
@@ -97,9 +98,20 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
       handleSkipForward();
     };
 
+    // Handle browser-initiated pause events (like tab focus loss)
+    const handlePause = () => {
+      if (!userInitiatedPause.current) {
+        // If this was not user-initiated, resume playback
+        if (isPlaying) {
+          audio!.play().catch(() => {});
+        }
+      }
+    };
+
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("durationchange", handleDurationChange);
     audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("pause", handlePause);
 
     setCurrentTime(audio.currentTime);
     setDuration(audio.duration || 0);
@@ -108,6 +120,7 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
       audio!.removeEventListener("timeupdate", handleTimeUpdate);
       audio!.removeEventListener("durationchange", handleDurationChange);
       audio!.removeEventListener("ended", handleEnded);
+      audio!.removeEventListener("pause", handlePause);
     };
   }, [currentTrackIndex, isPlaying, volume]);
 
@@ -119,6 +132,8 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
     }
     lastToggleTime.current = now;
     
+    // Mark this as a user-initiated action
+    userInitiatedPause.current = !isPlaying;
     setIsPlaying(prev => !prev);
   };
 

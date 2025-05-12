@@ -277,7 +277,7 @@ const Game = () => {
               </CardContent>
             </Card>
             
-            <Card className="border-[#00ff00]/30 bg-black/40 backdrop-blur-sm flex-1 min-w-[320px]">
+            <Card className="border-[#00ff00]/30 bg-black backdrop-blur-sm flex-1 min-w-[320px]">
               <CardHeader>
                 <CardTitle className="text-[#00ff00]">Music Player</CardTitle>
               </CardHeader>
