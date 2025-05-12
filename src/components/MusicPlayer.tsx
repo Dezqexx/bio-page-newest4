@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Play, Pause, SkipBack, SkipForward } from 'lucide-react';
 import { Slider } from "@/components/ui/slider";
 import TiltCard from '@/components/TiltCard';
@@ -52,7 +52,6 @@ const MusicPlayer = ({
     setSeeking(true);
     setDragValue(value[0]);
   };
-  
   const handleSliderCommit = (value: number[]) => {
     setSeeking(false);
     onSeek(value[0] / 100);
