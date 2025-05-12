@@ -5,7 +5,7 @@ import AudioPlayer from "@/components/AudioPlayer";
 import SocialLinks from "@/components/SocialLinks";
 import RainEffect from "@/components/RainEffect";
 import useSparkleEffect from "@/hooks/useSparkleEffect";
-import { MapPin, Calendar, Gamepad } from "lucide-react";
+import { MapPin, Calendar } from "lucide-react";
 import EnterScreen from "@/components/EnterScreen";
 import TiltCard from "@/components/TiltCard";
 import DiscordPresence from "@/components/DiscordPresence";
@@ -206,34 +206,32 @@ const Index = () => {
           <Button
             variant="outline"
             onClick={toggleGameView}
-            className="relative flex gap-2 items-center border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm text-[#00ff00] hover:bg-black/40 hover:border-[#00ff00]/70"
+            className="border-2 border-[#00ff00]/50 rounded-lg bg-black/30 backdrop-blur-sm text-[#00ff00] hover:bg-black/40 hover:border-[#00ff00]/70"
           >
-            <Gamepad className="w-5 h-5" />
             {showGame ? "Profile" : "Game"}
           </Button>
         </div>
       )}
 
       {entered ? (
-        <div className="flex flex-col items-center max-w-3xl w-full px-4">
+        <div className="flex flex-col items-center w-full max-w-3xl px-4">
           {showGame ? (
-            <div className="flex flex-col md:flex-row items-start justify-center gap-4 w-full">
-              <div className="w-full md:w-3/5">
+            <div className="w-full flex flex-col items-center">
+              <div className="w-full mb-6">
                 <NeonShooterGame />
               </div>
-              <div className="w-full md:w-2/5 mt-6 md:mt-0">
-                <MusicPlayer
-                  song={songs[currentTrackIndex]}
-                  isPlaying={isPlaying}
-                  onPlayPause={togglePlay}
-                  onSkipBack={handleSkipBack}
-                  onSkipForward={handleSkipForward}
-                  progress={progress}
-                  currentTime={currentTime}
-                  duration={duration}
-                  onSeek={handleSeek}
-                />
-              </div>
+              <MusicPlayer
+                song={songs[currentTrackIndex]}
+                isPlaying={isPlaying}
+                onPlayPause={togglePlay}
+                onSkipBack={handleSkipBack}
+                onSkipForward={handleSkipForward}
+                progress={progress}
+                currentTime={currentTime}
+                duration={duration}
+                onSeek={handleSeek}
+                className="bg-black"
+              />
             </div>
           ) : (
             <>
