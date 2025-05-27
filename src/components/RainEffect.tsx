@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 
 const RainEffect = () => {
@@ -10,7 +9,7 @@ const RainEffect = () => {
       drop.style.animationDuration = `${Math.random() * 1 + 0.5}s`;
       document.body.appendChild(drop);
 
-      if (Math.random() < 0.02) {
+      if (Math.random() < 0.015) { // Reduced frequency for better timing
         createLightning();
       }
 
