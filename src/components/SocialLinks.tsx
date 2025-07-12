@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Icon } from '@iconify/react';
 import { Music } from 'lucide-react';
@@ -10,7 +9,7 @@ const SocialLinks = () => {
       {[
         { 
           icon: "mdi:steam", 
-          href: "https://steamcommunity.com/id/Dezqex_", 
+          href: "https://steamcommunity.com/id/Dezqex/", 
           label: "Steam", 
           type: "iconify" 
         },
