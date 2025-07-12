@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 
@@ -295,12 +294,29 @@ const NeonShooterGame = () => {
   }, []);
 
   const checkCollision = useCallback((playerX: number, playerY: number, rect: { x: number; y: number; width: number; height: number }) => {
-    return (
+    const collision = (
       playerX < rect.x + rect.width &&
       playerX + PLAYER_SIZE > rect.x &&
       playerY < rect.y + rect.height &&
       playerY + PLAYER_SIZE > rect.y
     );
+    
+    // Debug logging for finish line collisions
+    if (rect.width === 30 && rect.height === 60) { // This is likely the finish line
+      console.log(`Finish line collision check:`, {
+        playerX,
+        playerY,
+        playerRight: playerX + PLAYER_SIZE,
+        playerBottom: playerY + PLAYER_SIZE,
+        finishX: rect.x,
+        finishY: rect.y,
+        finishRight: rect.x + rect.width,
+        finishBottom: rect.y + rect.height,
+        collision
+      });
+    }
+    
+    return collision;
   }, []);
 
   const updateGame = useCallback(() => {
@@ -349,6 +365,7 @@ const NeonShooterGame = () => {
       // Check obstacle collisions (death)
       for (const obstacle of currentLevelData.obstacles) {
         if (checkCollision(newPlayer.x, newPlayer.y, obstacle)) {
+          console.log(`Hit obstacle! Resetting to start.`);
           // Reset to start of current level
           newPlayer = {
             x: currentLevelData.playerStart.x,
@@ -361,13 +378,16 @@ const NeonShooterGame = () => {
         }
       }
 
-      // Check finish line collision - only trigger when player touches it
+      // Check finish line collision - use the actual collision detection
       if (checkCollision(newPlayer.x, newPlayer.y, currentLevelData.finishLine)) {
-        console.log(`Level ${currentLevel + 1} completed!`);
+        console.log(`Level ${currentLevel + 1} completed! Moving to next level.`);
         if (currentLevel < levels.length - 1) {
           // Move to next level
-          setCurrentLevel(prev => prev + 1);
-          setScore(prev => prev + 100);
+          setTimeout(() => {
+            setCurrentLevel(prev => prev + 1);
+            setScore(prev => prev + 100);
+          }, 100);
+          
           const nextLevel = levels[currentLevel + 1];
           newPlayer = {
             x: nextLevel.playerStart.x,
@@ -501,6 +521,9 @@ const NeonShooterGame = () => {
         <p className="text-red-400 text-sm mt-2">
           Red spikes, orange fire, and spinning saws will reset you to the start!
         </p>
+        <p className="text-cyan-400 text-sm mt-1">
+          Player position: X: {Math.round(player.x)}, Y: {Math.round(player.y)}
+        </p>
       </div>
       
       {/* Game area */}
@@ -545,6 +568,7 @@ const NeonShooterGame = () => {
                 background: 'linear-gradient(90deg, #00ff00 0%, #39FF14 50%, #00ff00 100%)',
                 border: '2px solid #39FF14',
                 borderRadius: '4px',
+                zIndex: 10,
               }}
             >
               <div 
@@ -566,7 +590,8 @@ const NeonShooterGame = () => {
                 backgroundColor: '#00ffff',
                 boxShadow: '0 0 15px rgba(0, 255, 255, 0.8)',
                 borderRadius: '2px',
-                transition: 'none'
+                transition: 'none',
+                zIndex: 20,
               }}
             />
           </>
