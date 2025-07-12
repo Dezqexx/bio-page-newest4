@@ -22,7 +22,7 @@ const NeonShooterGame = () => {
   const [gameActive, setGameActive] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
   const gameAreaRef = useRef<HTMLDivElement>(null);
-  const gameLoopRef = useRef<number>();
+  const gameLoopRef = useRef<NodeJS.Timeout | null>(null);
   const keysRef = useRef<Set<string>>(new Set());
 
   const [player, setPlayer] = useState<Player>({
