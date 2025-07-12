@@ -361,8 +361,9 @@ const NeonShooterGame = () => {
         }
       }
 
-      // Check finish line collision
+      // Check finish line collision - only trigger when player touches it
       if (checkCollision(newPlayer.x, newPlayer.y, currentLevelData.finishLine)) {
+        console.log(`Level ${currentLevel + 1} completed!`);
         if (currentLevel < levels.length - 1) {
           // Move to next level
           setCurrentLevel(prev => prev + 1);
@@ -530,7 +531,7 @@ const NeonShooterGame = () => {
               renderObstacle(obstacle, index)
             )}
 
-            {/* Finish Line */}
+            {/* Finish Line - Made more visible and positioned correctly */}
             <div
               style={{
                 position: 'absolute',
@@ -542,8 +543,17 @@ const NeonShooterGame = () => {
                 boxShadow: '0 0 20px rgba(0, 255, 0, 0.8)',
                 animation: 'pulse 1s infinite',
                 background: 'linear-gradient(90deg, #00ff00 0%, #39FF14 50%, #00ff00 100%)',
+                border: '2px solid #39FF14',
+                borderRadius: '4px',
               }}
-            />
+            >
+              <div 
+                className="absolute inset-0 flex items-center justify-center text-black font-bold text-xs"
+                style={{ fontSize: '10px' }}
+              >
+                GOAL
+              </div>
+            </div>
 
             {/* Player */}
             <div
@@ -555,6 +565,7 @@ const NeonShooterGame = () => {
                 height: `${PLAYER_SIZE}px`,
                 backgroundColor: '#00ffff',
                 boxShadow: '0 0 15px rgba(0, 255, 255, 0.8)',
+                borderRadius: '2px',
                 transition: 'none'
               }}
             />
